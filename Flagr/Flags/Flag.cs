@@ -5,14 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Flagr.Flag
+namespace Flagr.Flags
 {
     class Flag
     {
         public Bitmap Image { get; protected set; }
         public String Country { get; protected set; }
 
-
+        public Flag(Bitmap Image, String Country)
+        {
+            this.Image = Image;
+            this.Country = Country;
+        }
 
 
     }

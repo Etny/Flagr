@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Flagr.Flag
+namespace Flagr.Flags
 {
     class FlagManager
     {
-        private Dictionary<string, string> countryCodes = new Dictionary<string, string>();
 
-        public FlagManager()
+        private List<Flag> flags = new List<Flag>();
+
+
+        public List<Flag> getFlags()
         {
-            InitializeCountryCodes();
-
-            Console.WriteLine(countryCodes["ae"]);
+            return flags;
         }
 
-        private void InitializeCountryCodes()
+        public void Populate()
         {
             string[] lines = Properties.Resources.CountryCodes.Split('\n');
             StringBuilder builder = new StringBuilder();
@@ -27,14 +29,18 @@ namespace Flagr.Flag
                 string[] words = line.Split(' ');
                 string code = words[0].ToLower();
 
-                for(int i=1; i<words.Length; i++)
+                Bitmap img = (Bitmap)Properties.Resources.ResourceManager.GetObject(code);
+
+                if (img == null) continue;
+
+                for (int i=1; i<words.Length; i++)
                 {
                     string current = words[i].Substring(0, 1) + words[i].Substring(1, words[i].Length-1).ToLower();
 
                     builder.Append(i == words.Length - 1 ? current : current + ' ');
                 }
 
-                countryCodes[code] = builder.ToString();
+                flags.Add(new Flag(img, builder.ToString()));
                 builder.Clear();
             }
 

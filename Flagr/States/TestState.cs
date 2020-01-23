@@ -5,27 +5,38 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Flagr.Flags;
 
 namespace Flagr.States
 {
     class TestState : State
     {
 
-        float x = 0;
+        int x = 2000;
+        int index = 0;
+        Flag flag;
 
         Stopwatch watch;
-        public TestState()
+        public TestState() : base()
         {
             watch = new Stopwatch();
+            flag = Program.Flags.getFlags()[index];
         }
 
         public override void Update(DeltaTime deltaTime)
         {
+            graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
+            graphics.DrawImageUnscaled(flag.Image, 0, 0);
+            graphics.DrawString(flag.Country, Form1.DefaultFont, Brushes.Black, 400, 400);
 
-            Form1.BufferGraphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
-            Form1.BufferGraphics.FillRectangle(Brushes.Red, (int) x, 0, 100, 100);
+            x -= deltaTime.Milliseconds;
 
-            x += 100 * deltaTime.Seconds;
+            if(x <= 0)
+            {
+                x = 2000;
+                index = new Random().Next(0, Program.Flags.getFlags().Count-1);
+                flag = Program.Flags.getFlags()[index];
+            }
 
             base.Update(deltaTime);
         }

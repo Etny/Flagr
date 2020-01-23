@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,12 @@ namespace Flagr.States
 {
     abstract class State
     {
+        protected Graphics graphics;
+
+        public State()
+        {
+            this.graphics = Form1.BufferGraphics;
+        }
 
         public virtual void Update(DeltaTime deltaTime) 
         {

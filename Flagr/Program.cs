@@ -1,4 +1,4 @@
-﻿using Flagr.Flag;
+﻿using Flagr.Flags;
 using Flagr.States;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,6 @@ namespace Flagr
 
         private static Thread appThread;
         private static Stopwatch timer;
-        private static int targetTime = 16;
 
         [STAThread]
         static void Main()
@@ -32,7 +31,7 @@ namespace Flagr
 
             AppForm = new Form1();
             Flags = new FlagManager();
-            CurrentState = new TestState();
+            CurrentState = new StartupState();
 
             appThread = new Thread(new ThreadStart(Run))
             {
