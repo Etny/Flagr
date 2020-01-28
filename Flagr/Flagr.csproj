@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="States\QuizState.cs" />
     <Compile Include="States\StartupState.cs" />
     <Compile Include="States\State.cs" />
     <Compile Include="States\TestState.cs" />

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace Flagr.States
 {
@@ -11,7 +7,9 @@ namespace Flagr.States
     {
         private bool loading = false;
 
-        public StartupState() : base() {}
+        private readonly string loadingMessage = "Loading...";
+
+        public StartupState() : base() { }
 
         public override void Update(DeltaTime deltaTime)
         {
@@ -19,8 +17,11 @@ namespace Flagr.States
             {
                 loading = true;
 
+                Font loadFont = new Font("Arial", 40, FontStyle.Bold);
+                Size textSize = TextRenderer.MeasureText(loadingMessage, loadFont);
+
                 graphics.FillRectangle(Brushes.Black, 0, 0, Program.Width, Program.Height);
-                graphics.DrawString("Loading...", Form1.DefaultFont, Brushes.White, 100, 100);
+                TextRenderer.DrawText(graphics, loadingMessage, loadFont, new Point(Program.Width / 2 - textSize.Width / 2, Program.Height / 2 - textSize.Height / 2), Color.White);
 
                 base.Update(deltaTime);
 

@@ -20,7 +20,7 @@ namespace Flagr.States
         public TestState() : base()
         {
             watch = new Stopwatch();
-            flag = Program.Flags.getFlags()[index];
+            flag = Program.Flags.GetFlags()[index];
         }
 
         public override void Update(DeltaTime deltaTime)
@@ -33,10 +33,13 @@ namespace Flagr.States
 
             if(x <= 0)
             {
-                x = 2000;
-                index = new Random().Next(0, Program.Flags.getFlags().Count-1);
-                flag = Program.Flags.getFlags()[index];
+                x = 1000;
+                //index = new Random().Next(0, Program.Flags.getFlags().Count-1);
+                index++;
+                flag = Program.Flags.GetFlags()[index];
             }
+
+            Console.WriteLine(deltaTime.Milliseconds + " " + x);
 
             base.Update(deltaTime);
         }

@@ -25,6 +25,11 @@ namespace Flagr
             BufferGraphics = Graphics.FromImage(Buffer);
             graphics = CreateGraphics();
 
+            // BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            // BufferGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            BufferGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            BufferGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
@@ -38,7 +43,7 @@ namespace Flagr
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.DrawImageUnscaled(Buffer, 0, 0);
+            e.Graphics.DrawImageUnscaled(Buffer, -1, 0);
 
             base.OnPaint(e);
         }

@@ -12,9 +12,19 @@ namespace Flagr.Flags
     {
 
         private List<Flag> flags = new List<Flag>();
+        private Random rng;
 
+        public FlagManager()
+        {
+            rng = new Random();
+        }
 
-        public List<Flag> getFlags()
+        public Flag GetRandomFlag()
+        {
+            return flags[rng.Next(0, flags.Count - 1)];
+        }
+
+        public List<Flag> GetFlags()
         {
             return flags;
         }
@@ -40,7 +50,7 @@ namespace Flagr.Flags
                     builder.Append(i == words.Length - 1 ? current : current + ' ');
                 }
 
-                flags.Add(new Flag(img, builder.ToString()));
+                flags.Add(new Flag(img, builder.ToString(), Program.Width/3, Program.Height/3));
                 builder.Clear();
             }
 

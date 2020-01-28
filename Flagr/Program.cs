@@ -63,7 +63,7 @@ namespace Flagr
 
                 //Thread.Sleep(sleepTime > 0 ? sleepTime : targetTime);
 
-                Thread.Sleep(5);
+                Thread.Sleep(15);
             }
         }
     }
