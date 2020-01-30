@@ -16,6 +16,7 @@ namespace Flagr
         public static Form1 AppForm;
         public static State CurrentState;
         public static FlagManager Flags;
+        public static InputManager Input;
 
         public static readonly int Width = 1280;
         public static readonly int Height = 720;
@@ -32,6 +33,7 @@ namespace Flagr
             AppForm = new Form1();
             Flags = new FlagManager();
             CurrentState = new StartupState();
+            Input = new InputManager(AppForm);
 
             appThread = new Thread(new ThreadStart(Run))
             {

@@ -16,7 +16,7 @@ namespace Flagr.Flags
         public Flag(Bitmap Image, String Country)
         {
             this.Image = Image;
-            this.RawImage = Image;
+        //  this.RawImage = Image;
             this.Country = Country;
         }
 
@@ -35,7 +35,7 @@ namespace Flagr.Flags
             int scaledWidth = (int)(Image.Width * scale);
             int scaledHeight = (int)(Image.Height * scale);
 
-            Console.WriteLine(scale);
+            //Console.WriteLine(scale);
 
             Bitmap temp = new Bitmap(scaledWidth, scaledHeight);
             Graphics tempGraphics = Graphics.FromImage(temp);
