@@ -29,7 +29,7 @@ namespace Flagr.States
             }
             else
             {
-                Program.CurrentState = new QuizState();
+                Program.SetCurrentState(new QuizState());
             }
         }
     }

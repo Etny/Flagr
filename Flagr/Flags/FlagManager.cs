@@ -50,8 +50,10 @@ namespace Flagr.Flags
                     builder.Append(i == words.Length - 1 ? current : current + ' ');
                 }
 
-                flags.Add(new Flag(img, builder.ToString(), Program.Width/3, Program.Height/3));
+                flags.Add(new Flag(img, builder.ToString(), code, Program.Width/3, Program.Height/3));
                 builder.Clear();
+
+                img.Dispose();
             }
 
         }

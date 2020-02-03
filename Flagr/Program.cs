@@ -31,9 +31,10 @@ namespace Flagr
             Application.SetCompatibleTextRenderingDefault(false);
 
             AppForm = new Form1();
+            Input = new InputManager(AppForm);
             Flags = new FlagManager();
             CurrentState = new StartupState();
-            Input = new InputManager(AppForm);
+            
 
             appThread = new Thread(new ThreadStart(Run))
             {
@@ -44,6 +45,13 @@ namespace Flagr
             appThread.Start();
 
             Application.Run(AppForm);
+        }
+
+        public static void SetCurrentState(State s)
+        {
+            CurrentState.SetCurrentState(false);
+            CurrentState = s;
+            s.SetCurrentState(true);
         }
 
         private static void Run()

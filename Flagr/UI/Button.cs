@@ -13,7 +13,7 @@ namespace Flagr.UI
         public Size Size { get; set; }
         public Point Location { get; set; }
 
-        public SelectMode SelectMode { get; set; } = SelectMode.OnMouseUp;
+        public SelectMode SelectMode { get; set; } = SelectMode.OnMouseDown;
         public DrawMode DrawMode
         {
             get
@@ -38,11 +38,14 @@ namespace Flagr.UI
         protected Point origin;
         protected bool lastDown = false;
 
-        protected float hoverBuildUp = 0;
-        protected float hoverBuildUpMax = 100;
+        protected float hoverBuildup = 0;
+        protected float hoverBuildupMax = 100;
+        protected float hoverBuildupIncrease = 380;
+        protected float hoverBuildupDecrease = 650;
 
         protected float clickBuildup = 0;
         protected float clickBuildUpMax = 200;
+        protected float clickBuildupDecrease = 480;
 
         public Button(Point Location, Size Size) 
         {
@@ -75,10 +78,10 @@ namespace Flagr.UI
 
         public virtual void Select()
         {
-            hoverBuildUp = 0;
-            clickBuildup = clickBuildUpMax;
+            if (OnSelect != null) OnSelect.Invoke(this, null);
 
-            if(OnSelect != null) OnSelect.Invoke(this, null);
+            hoverBuildup = 0;
+            clickBuildup = clickBuildUpMax;
         }
         
         public virtual void Update(DeltaTime deltaTime)
@@ -91,7 +94,7 @@ namespace Flagr.UI
 
             if(clickBuildup > 0)
             {
-                clickBuildup -= 5;
+                clickBuildup -= clickBuildupDecrease * deltaTime.Seconds;
                 if (clickBuildup < 0) clickBuildup = 0;
             }
 
@@ -104,14 +107,14 @@ namespace Flagr.UI
                         Select();
                 }
 
-                if (hoverBuildUp < hoverBuildUpMax && clickBuildup == 0)
-                    hoverBuildUp += 360 * deltaTime.Seconds;
+                if (hoverBuildup < hoverBuildupMax && clickBuildup == 0)
+                    hoverBuildup += hoverBuildupIncrease * deltaTime.Seconds;
             }
 
-            else if(hoverBuildUp > 0)
+            else if(hoverBuildup > 0)
             {
-                hoverBuildUp -= 480 * deltaTime.Seconds;
-                if (hoverBuildUp < 0) hoverBuildUp = 0;
+                hoverBuildup -= hoverBuildupDecrease * deltaTime.Seconds;
+                if (hoverBuildup < 0) hoverBuildup = 0;
             }
 
             lastDown = mouseDown;
@@ -119,7 +122,7 @@ namespace Flagr.UI
 
         public virtual void Draw(Graphics g)
         {
-            Color fillColor = Color.FromArgb(255 - (int)hoverBuildUp, 255 - (int)clickBuildup, 255);
+            Color fillColor = Color.FromArgb(255 - (int)hoverBuildup, 255 - (int)clickBuildup, 255);
 
             g.FillRectangle(Brushes.Black, origin.X, origin.Y, Size.Width, Size.Height);
             g.FillRectangle(new SolidBrush(fillColor), origin.X + RimSize, origin.Y + RimSize, Size.Width - (RimSize * 2), Size.Height - (RimSize * 2));

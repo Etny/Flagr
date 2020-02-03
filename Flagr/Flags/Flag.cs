@@ -10,19 +10,22 @@ namespace Flagr.Flags
     class Flag
     {
         public Bitmap Image { get; protected set; }
-        public Bitmap RawImage { get; protected set; }
+        public Size ImageSize { get; protected set; }
         public String Country { get; protected set; }
 
-        public Flag(Bitmap Image, String Country)
-        {
-            this.Image = Image;
-        //  this.RawImage = Image;
-            this.Country = Country;
-        }
+        public bool IsImageLoaded { get; protected set; }
 
-        public Flag(Bitmap Image, String Country, int MaxWidth, int MaxHeight) : this(Image, Country)
+
+        private float scale;
+        private string imgName;
+
+        public Flag(Bitmap Image, String Country, String ImageName, int MaxWidth, int MaxHeight)
         {
-            float scale = 1;
+            this.Country = Country;
+            this.imgName = ImageName;
+
+
+             this.scale = 1;
 
             if (Image.Width > MaxWidth)
                 scale = (float)((float)MaxWidth / (float)Image.Width);
@@ -30,22 +33,34 @@ namespace Flagr.Flags
             if ((int)(Image.Height * scale) > MaxHeight)
                 scale = (float)((float)MaxHeight / (float)(Image.Height * scale));
 
-            if (scale == 1) return;
+            this.ImageSize = new Size((int)(Image.Width * scale), (int)(Image.Height * scale));
 
-            int scaledWidth = (int)(Image.Width * scale);
-            int scaledHeight = (int)(Image.Height * scale);
-
-            //Console.WriteLine(scale);
-
-            Bitmap temp = new Bitmap(scaledWidth, scaledHeight);
-            Graphics tempGraphics = Graphics.FromImage(temp);
-                
-            tempGraphics.DrawImage(Image, 0, 0, scaledWidth, scaledHeight);
-            tempGraphics.Dispose();
-
-            this.Image = temp;
+            Image.Dispose();
         }
 
+        public void LoadImage()
+        {
+            Bitmap img = (Bitmap)Properties.Resources.ResourceManager.GetObject(imgName);
+
+            int scaledWidth = (int)(img.Width * scale);
+            int scaledHeight = (int)(img.Height * scale);
+
+            Image = new Bitmap(scaledWidth, scaledHeight);
+            Graphics tempGraphics = Graphics.FromImage(Image);
+
+            tempGraphics.DrawImage(img, 0, 0, scaledWidth, scaledHeight);
+            tempGraphics.Dispose();
+
+            img.Dispose();
+
+            IsImageLoaded = true;
+        }
+
+        public void UnloadImage()
+        {
+            IsImageLoaded = false;
+            Image.Dispose();
+        }
 
     }
 }
