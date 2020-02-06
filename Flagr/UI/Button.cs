@@ -12,7 +12,6 @@ namespace Flagr.UI
 
         public Size Size { get; set; }
         public Point Location { get; set; }
-
         public SelectMode SelectMode { get; set; } = SelectMode.OnMouseDown;
         public DrawMode DrawMode
         {
@@ -29,12 +28,13 @@ namespace Flagr.UI
         } 
 
         public int RimSize { get; set; } = 3;
+        public TextLabel Label { get; protected set; } = new TextLabel();
 
         public bool Hovered { get; protected set; } = false;
 
         public event EventHandler OnSelect;
 
-        private DrawMode drawMode = DrawMode.origin;
+        private DrawMode drawMode = DrawMode.TopLeft;
         protected Point origin;
         protected bool lastDown = false;
 
@@ -63,7 +63,7 @@ namespace Flagr.UI
 
         public Button() : this(Point.Empty, 100, 50) { }
 
-        private void SetTopLeft()
+        protected virtual void SetTopLeft()
         {
             int topX = Location.X, topY = Location.Y;
 
@@ -74,6 +74,8 @@ namespace Flagr.UI
             }
 
             origin = new Point(topX, topY);
+            Label.Location = new Point(topX + Size.Width / 2, topY + Size.Height / 2);
+            Label.Text = "Text";
         }
 
         public virtual void Select()
@@ -126,6 +128,8 @@ namespace Flagr.UI
 
             g.FillRectangle(Brushes.Black, origin.X, origin.Y, Size.Width, Size.Height);
             g.FillRectangle(new SolidBrush(fillColor), origin.X + RimSize, origin.Y + RimSize, Size.Width - (RimSize * 2), Size.Height - (RimSize * 2));
+
+            Label.Draw(g);
         }
 
     }
@@ -137,6 +141,6 @@ namespace Flagr.UI
 
     public enum DrawMode
     {
-        Centered, origin
+        Centered, TopLeft
     }
 }

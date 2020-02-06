@@ -95,6 +95,7 @@
     <Compile Include="States\TestState.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\QuizButton.cs" />
+    <Compile Include="UI\TextLabel.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

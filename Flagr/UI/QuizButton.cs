@@ -42,6 +42,7 @@ namespace Flagr.UI
         private int num;
         private string numString;
         private bool correct = false;
+        private int textMargin = 5;
 
         public Font NumberFont { get; set; } = new Font("Arial", 30, FontStyle.Bold); 
 
@@ -49,6 +50,7 @@ namespace Flagr.UI
         public QuizButton(int X, int Y, int Width, int Height, int Number) : base(X, Y, Width, Height)
         {
             this.Number = Number;
+            this.Label.Font = new Font("Arial", 30, FontStyle.Regular);
         }
 
         public QuizButton(int X, int Y, int Width, int Height) : this(X, Y, Width, Height, 1) { }
@@ -58,6 +60,14 @@ namespace Flagr.UI
         {
             hoverBuildup = 0;
             clickBuildup = clickBuildUpMax;
+        }
+
+        protected override void SetTopLeft()
+        {
+            base.SetTopLeft();
+
+            this.Label.Location = new Point((origin.X + NumberBoxWidth) + ((Size.Width - NumberBoxWidth) / 2), origin.Y + Size.Height / 2);
+            this.Label.Bounds = new Size(Size.Width - NumberBoxWidth - (textMargin * 2), Size.Height - (textMargin * 2));
         }
 
         public override void Draw(Graphics g)
@@ -86,6 +96,7 @@ namespace Flagr.UI
 
             g.DrawString(numString, NumberFont, new SolidBrush(numColor), origin.X + NumberBoxWidth / 2 - numWidth / 2, origin.Y + Size.Height / 2 - numHeight / 2);
 
+            Label.Draw(g);
         }
     }
 }

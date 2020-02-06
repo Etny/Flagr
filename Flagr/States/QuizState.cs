@@ -117,9 +117,33 @@ namespace Flagr.States
                 AddRandomFlag();
             }
             
-            SetFrame(flagQueue.Peek());             
+            SetFrame(flagQueue.Peek());
 
             Correct = buttons[rng.Next(0, 4)];
+
+            List<Flag> choosenAnswers = new List<Flag>();
+
+            choosenAnswers.Add(flagQueue.Peek());
+
+            foreach(QuizButton b in buttons)
+            {
+                if (Correct == b)
+                {
+                    b.Label.Text = flagQueue.Peek().Country;
+                }
+                else
+                {
+                    Flag falseFlag;
+
+                    do
+                    {
+                        falseFlag = Program.Flags.GetRandomFlag();
+                    } while (choosenAnswers.Contains(falseFlag));
+
+                    choosenAnswers.Add(falseFlag);
+                    b.Label.Text = falseFlag.Country;
+                }
+            }
         }
 
         private void SetFrame(Flag currentFlag)
@@ -143,7 +167,7 @@ namespace Flagr.States
 
             graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
 
-            graphics.FillRectangle(Brushes.Orange, flagX - frame.Width / 2, flagY - frame.Height / 2, frame.Width, frame.Height);
+        //    graphics.FillRectangle(Brushes.Orange, flagX - frame.Width / 2, flagY - frame.Height / 2, frame.Width, frame.Height);
 
             if (currentFlag.IsImageLoaded)
                 graphics.DrawImage(currentFlag.Image, flagX - currentFlag.Image.Width / 2, flagY - currentFlag.Image.Height / 2);
