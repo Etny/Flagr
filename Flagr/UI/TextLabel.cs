@@ -8,14 +8,17 @@ using System.Windows.Forms;
 
 namespace Flagr.UI
 {
-    class TextLabel
+    class TextLabel : UIElement
     {
 
-        public Point Location { get; set; } = Point.Empty;
         public Color Color { get; set; } = Color.Black;
-        public DrawMode DrawMode { get; set; } = DrawMode.Centered;
         public Size Bounds { get; set; } = Size.Empty;
 
+
+        public TextLabel()
+        {
+            this.DrawMode = DrawMode.Centered;
+        }
 
         public String Text
         {
@@ -67,7 +70,7 @@ namespace Flagr.UI
             }
         }
 
-        public void Draw(Graphics g)
+        public override void Draw(Graphics g)
         {
             int drawX = Location.X, drawY = Location.Y;
 

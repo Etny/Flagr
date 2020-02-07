@@ -13,11 +13,15 @@ namespace Flagr.States
 {
     class QuizState : State
     {
-        private Queue<Flag> flagQueue;
+        private FlagContainer[] flags;
         private QuizButton[] buttons;
 
-        private readonly int flagX = Program.Width / 2;
-        private readonly int flagY = Program.Height / 3;
+        private readonly int queueSize = 4;
+        private readonly int currentFlagIndex = 2;
+
+        private readonly int currentFlagX = Program.Width / 2;
+        private readonly int currentFlagY = Program.Height / 3;
+        private readonly int flagSpacing = Program.Width / 2;
 
         private readonly int buttonWidth = 300;
         private readonly int buttonHeight = 60;
@@ -41,16 +45,19 @@ namespace Flagr.States
         private FlagFrame frame;
         private bool frameSet = false;
 
+        private int freezeTime = 0;
+        private int maxFreezeTime = 1000;
 
-        public QuizState() : base() 
+
+        public QuizState() : base()
         {
-            flagQueue = new Queue<Flag>();
+            flags = new FlagContainer[queueSize];
             buttons = new QuizButton[4];
             rng = new Random();
-            
 
-            int[] buttonX = { Program.Width / 2 - (buttonWidth + buttonSpacing/2), Program.Width / 2 + buttonSpacing / 2 };
-            int[] buttonY = {buttonTop, buttonTop + buttonHeight + buttonSpacing};
+
+            int[] buttonX = { Program.Width / 2 - (buttonWidth + buttonSpacing / 2), Program.Width / 2 + buttonSpacing / 2 };
+            int[] buttonY = { buttonTop, buttonTop + buttonHeight + buttonSpacing };
 
             for (int i = 0; i < 5; i++)
                 AddRandomFlag();
@@ -67,11 +74,55 @@ namespace Flagr.States
                 LerpTime = .3f
             };
 
-            SetFrame(flagQueue.Peek());
+         //   SetFrame(flagQueue.Peek());
             frame.ReachTargets();
-           
+
 
             NextFlag();
+        }
+
+        private Flag GetCurrentFlag()
+        {
+            return flags[currentFlagIndex].Flag;
+        }
+
+        private void SetFlagLocations()
+        {
+            for(int i = 0; i < flags.Length; i++)
+            {
+                FlagContainer c = flags[i];
+
+                int offset = currentFlagIndex - i;
+
+                c.Location = new Point(currentFlagX + (offset * flagSpacing), currentFlagY);
+            }
+        }
+
+        private void Enqueue(Flag f)
+        {
+            FlagContainer temp = flags[flags.Length - 1];
+
+            for(int i=flags.Length-1; i>0; i--)           
+                flags[i] = flags[i - 1];
+
+            if (temp == null)
+                temp = new FlagContainer();
+            else
+                temp.Flag.UnloadImage();
+
+            temp.Flag = f;
+
+            flags[0] = temp;
+
+            f.LoadImage();
+        }
+
+        private bool IsCurrentlyInQueue(Flag f)
+        {
+            foreach (FlagContainer c in flags)
+                if (c != null && c.Flag == f) return true;
+
+            return false;
         }
 
         private void AddRandomFlag()
@@ -81,10 +132,10 @@ namespace Flagr.States
             do
             {
                 f = Program.Flags.GetRandomFlag();
-            } while (flagQueue.Contains(f));
+            } while (IsCurrentlyInQueue(f));
 
             f.LoadImage();
-            flagQueue.Enqueue(f);
+            Enqueue(f);
         }
 
         private void ButtonPressed(object sender, EventArgs e)
@@ -97,39 +148,47 @@ namespace Flagr.States
             if (!button.CorrectAnswer)
                 Correct.Highlight();
 
-            NextFlag();
+            freezeTime = maxFreezeTime;
+
+            foreach (QuizButton b in buttons)
+            {
+                b.Selectable = false;
+                b.Hoverable = false;
+            }
         }
 
         protected override void KeyPressed(KeyEventArgs e, bool repeating)
         {
             if (!repeating && buttonKeys.Contains(e.KeyCode))
-                buttons[buttonKeys.IndexOf(e.KeyCode)%4].Select();
+                buttons[buttonKeys.IndexOf(e.KeyCode) % 4].Select();
         }
 
         private void NextFlag()
         {
             frameSet = false;
-            
+
 
             if (Correct != null)
             {
-                flagQueue.Dequeue().UnloadImage();
+             //   flagQueue.Dequeue().UnloadImage();
                 AddRandomFlag();
             }
-            
-            SetFrame(flagQueue.Peek());
+
+            SetFlagLocations();
+
+          //  SetFrame(flagQueue.Peek());
 
             Correct = buttons[rng.Next(0, 4)];
 
             List<Flag> choosenAnswers = new List<Flag>();
 
-            choosenAnswers.Add(flagQueue.Peek());
+            choosenAnswers.Add(GetCurrentFlag());
 
-            foreach(QuizButton b in buttons)
+            foreach (QuizButton b in buttons)
             {
                 if (Correct == b)
                 {
-                    b.Label.Text = flagQueue.Peek().Country;
+                    b.Label.Text = GetCurrentFlag().Country;
                 }
                 else
                 {
@@ -157,26 +216,48 @@ namespace Flagr.States
 
         public override void Update(DeltaTime deltaTime)
         {
-            Flag currentFlag = flagQueue.Peek();
+          //  if (!frameSet) SetFrame(currentFlag);
+          //  frame.Update(deltaTime);
 
-            if (!frameSet) SetFrame(currentFlag);
-            frame.Update(deltaTime);
+            if(freezeTime > 0)
+            {
+                freezeTime -= deltaTime.Milliseconds;
+
+                if(freezeTime <= 0)
+                {
+                    foreach(QuizButton b in buttons)
+                    {
+                        b.Selectable = true;
+                        b.Hoverable = true;
+                    }
+                        
+
+                    NextFlag();
+                }
+            }
 
             foreach (QuizButton b in buttons)
                 b.Update(deltaTime);
 
+            Draw();
+
+            base.Update(deltaTime);
+        }
+
+        private void Draw()
+        {
+            Flag currentFlag = GetCurrentFlag();
+
             graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
 
-        //    graphics.FillRectangle(Brushes.Orange, flagX - frame.Width / 2, flagY - frame.Height / 2, frame.Width, frame.Height);
+            //    graphics.FillRectangle(Brushes.Orange, flagX - frame.Width / 2, flagY - frame.Height / 2, frame.Width, frame.Height);
 
-            if (currentFlag.IsImageLoaded)
-                graphics.DrawImage(currentFlag.Image, flagX - currentFlag.Image.Width / 2, flagY - currentFlag.Image.Height / 2);
-
+            for (int i = 0; i < flags.Length; i++)
+                if (flags[i] != null)
+                    flags[i].Draw(graphics);
 
             foreach (QuizButton b in buttons)
                 b.Draw(graphics);
-            
-            base.Update(deltaTime);
         }
 
     }

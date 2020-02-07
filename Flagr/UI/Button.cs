@@ -7,35 +7,18 @@ using System.Threading.Tasks;
 
 namespace Flagr.UI
 {
-    class Button
+    class Button : UIElement
     {
 
-        public Size Size { get; set; }
-        public Point Location { get; set; }
         public SelectMode SelectMode { get; set; } = SelectMode.OnMouseDown;
-        public DrawMode DrawMode
-        {
-            get
-            {
-                return drawMode;
-            }
-
-            set
-            {
-                drawMode = value;
-                SetTopLeft();
-            }
-        } 
-
+        public bool Selectable { get; set; } = true;
+        public bool Hoverable { get; set; } = true;
         public int RimSize { get; set; } = 3;
         public TextLabel Label { get; protected set; } = new TextLabel();
-
         public bool Hovered { get; protected set; } = false;
 
         public event EventHandler OnSelect;
 
-        private DrawMode drawMode = DrawMode.TopLeft;
-        protected Point origin;
         protected bool lastDown = false;
 
         protected float hoverBuildup = 0;
@@ -45,14 +28,12 @@ namespace Flagr.UI
 
         protected float clickBuildup = 0;
         protected float clickBuildUpMax = 200;
-        protected float clickBuildupDecrease = 480;
+        protected float clickBuildupDecrease = 280;
 
         public Button(Point Location, Size Size) 
         {
             this.Location = Location;
             this.Size = Size;
-
-            SetTopLeft();
         }
 
         public Button(int X, int Y, int Width, int Height) : this(new Point(X, Y), new Size(Width, Height)) { }
@@ -63,30 +44,23 @@ namespace Flagr.UI
 
         public Button() : this(Point.Empty, 100, 50) { }
 
-        protected virtual void SetTopLeft()
+        protected override void SetOrigin()
         {
-            int topX = Location.X, topY = Location.Y;
-
-            if (DrawMode == DrawMode.Centered)
-            {
-                topX = Location.X - Size.Width / 2;
-                topY= Location.Y - Size.Height / 2;
-            }
-
-            origin = new Point(topX, topY);
-            Label.Location = new Point(topX + Size.Width / 2, topY + Size.Height / 2);
-            Label.Text = "Text";
+            base.SetOrigin();
+            Label.Location = new Point(origin.X + Size.Width / 2, origin.Y + Size.Height / 2);
         }
 
         public virtual void Select()
         {
+            if (!Selectable) return;
+
             if (OnSelect != null) OnSelect.Invoke(this, null);
 
             hoverBuildup = 0;
             clickBuildup = clickBuildUpMax;
         }
         
-        public virtual void Update(DeltaTime deltaTime)
+        public override void Update(DeltaTime deltaTime)
         {
             Point mouse = Program.Input.MouseLocation;
             bool mouseDown = Program.Input.MouseDown;
@@ -102,14 +76,14 @@ namespace Flagr.UI
 
             if (Hovered)
             {
-                if (mouseDown != lastDown)
+                if (mouseDown != lastDown && Selectable)
                 {
                     if ((SelectMode == SelectMode.OnMouseUp && mouseDown == false) 
                     || (SelectMode == SelectMode.OnMouseDown && mouseDown == true))
                         Select();
                 }
 
-                if (hoverBuildup < hoverBuildupMax && clickBuildup == 0)
+                if (Hoverable && hoverBuildup < hoverBuildupMax && clickBuildup == 0)
                     hoverBuildup += hoverBuildupIncrease * deltaTime.Seconds;
             }
 
@@ -122,7 +96,7 @@ namespace Flagr.UI
             lastDown = mouseDown;
         }
 
-        public virtual void Draw(Graphics g)
+        public override void Draw(Graphics g)
         {
             Color fillColor = Color.FromArgb(255 - (int)hoverBuildup, 255 - (int)clickBuildup, 255);
 

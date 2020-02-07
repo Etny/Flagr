@@ -62,9 +62,9 @@ namespace Flagr.UI
             clickBuildup = clickBuildUpMax;
         }
 
-        protected override void SetTopLeft()
+        protected override void SetOrigin()
         {
-            base.SetTopLeft();
+            base.SetOrigin();
 
             this.Label.Location = new Point((origin.X + NumberBoxWidth) + ((Size.Width - NumberBoxWidth) / 2), origin.Y + Size.Height / 2);
             this.Label.Bounds = new Size(Size.Width - NumberBoxWidth - (textMargin * 2), Size.Height - (textMargin * 2));
