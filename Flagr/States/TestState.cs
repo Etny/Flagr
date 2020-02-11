@@ -40,8 +40,6 @@ namespace Flagr.States
             }
 
             Console.WriteLine(deltaTime.Milliseconds + " " + x);
-
-            base.Update(deltaTime);
         }
     }
 }

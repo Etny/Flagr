@@ -20,10 +20,7 @@ namespace Flagr.States
             Program.Input.OnKeyDown += KeyDownCheck;
         }
 
-        public virtual void Update(DeltaTime deltaTime) 
-        {
-            Program.AppForm.Redraw();
-        }
+        public virtual void Update(DeltaTime deltaTime) { }
 
         public void SetCurrentState(bool current)
         {

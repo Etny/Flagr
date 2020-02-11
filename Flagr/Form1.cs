@@ -33,12 +33,9 @@ namespace Flagr
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
-         //  this.Canvas.Image = Buffer;
-        }
+            this.Load += Form1_Load;
 
-        public void Redraw()
-        {
-            this.Invalidate();
+         //  this.Canvas.Image = Buffer;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -46,6 +43,19 @@ namespace Flagr
             e.Graphics.DrawImageUnscaled(Buffer, -1, 0);
 
             base.OnPaint(e);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Timer timer = new Timer();
+            timer.Interval = (5);
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            this.Invalidate();
         }
 
         protected  void OnPaintBackground1(PaintEventArgs e)

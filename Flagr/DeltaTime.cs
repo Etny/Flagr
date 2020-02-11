@@ -6,21 +6,25 @@ using System.Threading.Tasks;
 
 namespace Flagr
 {
-    struct DeltaTime
+    class DeltaTime
     {
         public float Seconds { get; set; }
         public int Milliseconds { get; set; }
 
-        public DeltaTime(int Milliseconds)
+        public DeltaTime Set(int Milliseconds)
         {
             this.Milliseconds = Milliseconds;
             this.Seconds = (float)(Milliseconds / 1000f);
+
+            return this;
         }
 
-        public DeltaTime(float Seconds)
+        public DeltaTime Set(float Seconds)
         {
             this.Seconds = Seconds;
             this.Milliseconds = (int)(Seconds * 1000);
+
+            return this;
         }
 
     }

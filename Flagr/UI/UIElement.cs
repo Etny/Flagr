@@ -72,5 +72,13 @@ namespace Flagr.UI
 
             origin = new Point(originX, originY);
         }
+
+        public virtual void SetLocation(int X, int Y)
+        {
+            location.X = X;
+            location.Y = Y;
+
+            SetOrigin();
+        }
     }
 }

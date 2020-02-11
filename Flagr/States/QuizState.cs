@@ -22,6 +22,7 @@ namespace Flagr.States
         private readonly int currentFlagX = Program.Width / 2;
         private readonly int currentFlagY = Program.Height / 3;
         private readonly int flagSpacing = Program.Width / 2;
+        private readonly Curve flagMoveCurve;
 
         private readonly int buttonWidth = 300;
         private readonly int buttonHeight = 60;
@@ -42,18 +43,19 @@ namespace Flagr.States
 
         private Random rng;
         private QuizButton Correct;
-        private FlagFrame frame;
-        private bool frameSet = false;
 
-        private int freezeTime = 0;
-        private int maxFreezeTime = 1000;
-
+        private float freezeTime = 0;
+        private float maxFreezeTime = 1;
 
         public QuizState() : base()
         {
             flags = new FlagContainer[queueSize];
             buttons = new QuizButton[4];
             rng = new Random();
+            flagMoveCurve = new Curve()
+            {
+                Range = maxFreezeTime
+            };
 
 
             int[] buttonX = { Program.Width / 2 - (buttonWidth + buttonSpacing / 2), Program.Width / 2 + buttonSpacing / 2 };
@@ -68,16 +70,6 @@ namespace Flagr.States
                 buttons[i].OnSelect += ButtonPressed;
             }
 
-            frame = new FlagFrame()
-            {
-                RimSize = 20,
-                LerpTime = .3f
-            };
-
-         //   SetFrame(flagQueue.Peek());
-            frame.ReachTargets();
-
-
             NextFlag();
         }
 
@@ -88,13 +80,17 @@ namespace Flagr.States
 
         private void SetFlagLocations()
         {
+            float slideOffset = freezeTime <= 0 ? 0 : flagMoveCurve.GetValue(maxFreezeTime-freezeTime) * (float)flagSpacing;
+
             for(int i = 0; i < flags.Length; i++)
             {
                 FlagContainer c = flags[i];
 
+                if (c == null) continue;
+
                 int offset = currentFlagIndex - i;
 
-                c.Location = new Point(currentFlagX + (offset * flagSpacing), currentFlagY);
+                c.SetLocation(currentFlagX + (offset * flagSpacing) - (int)slideOffset, currentFlagY);
             }
         }
 
@@ -165,9 +161,6 @@ namespace Flagr.States
 
         private void NextFlag()
         {
-            frameSet = false;
-
-
             if (Correct != null)
             {
              //   flagQueue.Dequeue().UnloadImage();
@@ -175,8 +168,6 @@ namespace Flagr.States
             }
 
             SetFlagLocations();
-
-          //  SetFrame(flagQueue.Peek());
 
             Correct = buttons[rng.Next(0, 4)];
 
@@ -205,23 +196,13 @@ namespace Flagr.States
             }
         }
 
-        private void SetFrame(Flag currentFlag)
-        {
-            if (currentFlag.IsImageLoaded)
-            {
-                frame.SetTargets(currentFlag.ImageSize.Width, currentFlag.ImageSize.Height);
-                frameSet = true;
-            }
-        }
-
         public override void Update(DeltaTime deltaTime)
         {
-          //  if (!frameSet) SetFrame(currentFlag);
-          //  frame.Update(deltaTime);
-
-            if(freezeTime > 0)
+            if (freezeTime > 0)
             {
-                freezeTime -= deltaTime.Milliseconds;
+                SetFlagLocations();
+
+                freezeTime -= deltaTime.Seconds;
 
                 if(freezeTime <= 0)
                 {
@@ -230,7 +211,8 @@ namespace Flagr.States
                         b.Selectable = true;
                         b.Hoverable = true;
                     }
-                        
+
+                    freezeTime = 0;
 
                     NextFlag();
                 }
@@ -240,17 +222,11 @@ namespace Flagr.States
                 b.Update(deltaTime);
 
             Draw();
-
-            base.Update(deltaTime);
         }
 
         private void Draw()
         {
-            Flag currentFlag = GetCurrentFlag();
-
             graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
-
-            //    graphics.FillRectangle(Brushes.Orange, flagX - frame.Width / 2, flagY - frame.Height / 2, frame.Width, frame.Height);
 
             for (int i = 0; i < flags.Length; i++)
                 if (flags[i] != null)
@@ -261,55 +237,6 @@ namespace Flagr.States
         }
 
     }
-}
-
-
-internal class FlagFrame
-{
-
-    public int RimSize { get; set; } = 0;
-    public float Width { get; set; } = 0;
-    public float Height { get; set; } = 0;
-    public int TargetWidth { get; set; } = 0;
-    public int TargetHeight { get; set; } = 0;
-
-    public float LerpTime { get; set; } = 1;
-
-    private float deltaWidth, deltaHeight;
-
-    public void Update(DeltaTime deltaTime)
-    {
-        Width += MoveTowards(deltaTime, Width, deltaWidth, TargetWidth);
-        Height += MoveTowards(deltaTime, Height, deltaHeight, TargetHeight);
-    }
-
-    public void SetTargets(int TargetWidth, int TargetHeight)
-    {
-        this.TargetWidth = TargetWidth + (RimSize * 2);
-        this.TargetHeight = TargetHeight + (RimSize * 2);
-
-        this.deltaWidth = ((float)this.TargetWidth - Width) * (1/LerpTime); 
-        this.deltaHeight = ((float)this.TargetHeight - Height) * (1/LerpTime);
-    }
-
-    public void ReachTargets()
-    {
-        Width = (int)TargetWidth;
-        Height = (int)TargetHeight;
-    }
-
-    private float MoveTowards(DeltaTime deltaTime, float current, float delta, int target)
-    {
-        if ((int)current == target) return 0;
-
-        float lerp = delta * deltaTime.Seconds;
-        float dif = (float)target - current;
-
-        if (Math.Abs(lerp) > Math.Abs(dif)) lerp = dif;
-
-        return lerp;
-    }
-
  
         
 

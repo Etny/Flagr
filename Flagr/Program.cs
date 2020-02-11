@@ -21,8 +21,9 @@ namespace Flagr
         public static readonly int Width = 1280;
         public static readonly int Height = 720;
 
-        private static Thread appThread;
         private static Stopwatch timer;
+        private static long lastTime;
+        private static DeltaTime deltaTime;
 
         [STAThread]
         static void Main()
@@ -34,17 +35,22 @@ namespace Flagr
             Input = new InputManager(AppForm);
             Flags = new FlagManager();
             CurrentState = new StartupState();
-            
 
-            appThread = new Thread(new ThreadStart(Run))
-            {
-                IsBackground = true
-            };
+            timer = new Stopwatch();
+            deltaTime = new DeltaTime();
 
+            timer.Start();
 
-            appThread.Start();
+            lastTime = timer.ElapsedMilliseconds;
+
+            AppForm.Paint += AppForm_Paint;
 
             Application.Run(AppForm);
+        }
+
+        private static void AppForm_Paint(object sender, PaintEventArgs e)
+        {
+            Update();
         }
 
         public static void SetCurrentState(State s)
@@ -54,27 +60,13 @@ namespace Flagr
             s.SetCurrentState(true);
         }
 
-        private static void Run()
+        public static void Update()
         {
-            timer = new Stopwatch();
-            timer.Start();
+            int delta = (int)(timer.ElapsedMilliseconds - lastTime);
 
-            long lastTime = timer.ElapsedMilliseconds;
+            CurrentState.Update(deltaTime.Set(delta));
 
-            while (true)
-            {
-                int deltaTime = (int)(timer.ElapsedMilliseconds - lastTime);
-
-                CurrentState.Update(new DeltaTime(deltaTime)) ;
-
-                lastTime = timer.ElapsedMilliseconds;
-
-                //int sleepTime = (int)(targetTime - timer.ElapsedMilliseconds);
-
-                //Thread.Sleep(sleepTime > 0 ? sleepTime : targetTime);
-
-                Thread.Sleep(15);
-            }
+            lastTime = timer.ElapsedMilliseconds;
         }
     }
 }
