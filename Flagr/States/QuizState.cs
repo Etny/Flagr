@@ -15,6 +15,11 @@ namespace Flagr.States
     {
         private FlagContainer[] flags;
         private QuizButton[] buttons;
+        private TextLabel QuestionCounter;
+
+        public int QuestionCount { get; set; } = 10;
+
+        private int currentQuestion = 0;
 
         private readonly int queueSize = 4;
         private readonly int currentFlagIndex = 2;
@@ -22,7 +27,7 @@ namespace Flagr.States
         private readonly int currentFlagX = Program.Width / 2;
         private readonly int currentFlagY = Program.Height / 3;
         private readonly int flagSpacing = Program.Width / 2;
-        private readonly Curve flagMoveCurve;
+        private readonly BezierCurve bezier;
 
         private readonly int buttonWidth = 300;
         private readonly int buttonHeight = 60;
@@ -45,17 +50,23 @@ namespace Flagr.States
         private QuizButton Correct;
 
         private float freezeTime = 0;
-        private float maxFreezeTime = 1;
+        private float maxFreezeTime = .7f;
 
         public QuizState() : base()
         {
             flags = new FlagContainer[queueSize];
+
             buttons = new QuizButton[4];
-            rng = new Random();
-            flagMoveCurve = new Curve()
+
+            QuestionCounter = new TextLabel()
             {
-                Range = maxFreezeTime
+                Font = new Font("Arial", 30, FontStyle.Bold),
+                DrawMode = UI.DrawMode.Centered,
+                Location = new Point(currentFlagX, 40)
             };
+
+            rng = new Random();
+            bezier = new BezierCurve(new PointF[] { new PointF(1, -.4f), new PointF(0.8f, 1) }, maxFreezeTime);
 
 
             int[] buttonX = { Program.Width / 2 - (buttonWidth + buttonSpacing / 2), Program.Width / 2 + buttonSpacing / 2 };
@@ -71,6 +82,9 @@ namespace Flagr.States
             }
 
             NextFlag();
+
+
+            flags[queueSize - 1] = null;
         }
 
         private Flag GetCurrentFlag()
@@ -80,7 +94,7 @@ namespace Flagr.States
 
         private void SetFlagLocations()
         {
-            float slideOffset = freezeTime <= 0 ? 0 : flagMoveCurve.GetValue(maxFreezeTime-freezeTime) * (float)flagSpacing;
+            float slideOffset = freezeTime <= 0 ? 0 : bezier.GetValue(maxFreezeTime-freezeTime) * (float)flagSpacing;
 
             for(int i = 0; i < flags.Length; i++)
             {
@@ -106,11 +120,17 @@ namespace Flagr.States
             else
                 temp.Flag.UnloadImage();
 
-            temp.Flag = f;
+            if (f == null)
+                temp = null;
+            else
+            {
+                temp.Flag = f;
+                f.LoadImage();
+            }
 
             flags[0] = temp;
 
-            f.LoadImage();
+            
         }
 
         private bool IsCurrentlyInQueue(Flag f)
@@ -123,6 +143,12 @@ namespace Flagr.States
 
         private void AddRandomFlag()
         {
+            if (currentQuestion >= QuestionCount - (queueSize - 2))
+            {
+                Enqueue(null);
+                return;
+            }
+
             Flag f;
 
             do
@@ -162,12 +188,12 @@ namespace Flagr.States
         private void NextFlag()
         {
             if (Correct != null)
-            {
-             //   flagQueue.Dequeue().UnloadImage();
                 AddRandomFlag();
-            }
-
+            
             SetFlagLocations();
+
+            currentQuestion++;
+            QuestionCounter.Text = currentQuestion + "/" + QuestionCount;
 
             Correct = buttons[rng.Next(0, 4)];
 
@@ -227,6 +253,8 @@ namespace Flagr.States
         private void Draw()
         {
             graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
+
+            QuestionCounter.Draw(graphics);
 
             for (int i = 0; i < flags.Length; i++)
                 if (flags[i] != null)

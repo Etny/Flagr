@@ -94,6 +94,7 @@
     <Compile Include="States\State.cs" />
     <Compile Include="States\TestState.cs" />
     <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\BezierCurve.cs" />
     <Compile Include="UI\Curve.cs" />
     <Compile Include="UI\FlagContainer.cs" />
     <Compile Include="UI\QuizButton.cs" />

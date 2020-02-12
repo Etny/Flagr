@@ -23,7 +23,7 @@ namespace Flagr.UI
 
         protected float hoverBuildup = 0;
         protected float hoverBuildupMax = 100;
-        protected float hoverBuildupIncrease = 380;
+        protected float hoverBuildupIncrease = 600;
         protected float hoverBuildupDecrease = 650;
 
         protected float clickBuildup = 0;
