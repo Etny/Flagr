@@ -53,9 +53,12 @@ namespace Flagr.UI
         private Font textFont = Program.AppForm.Font;
         private Font defaultFont = Program.AppForm.Font;
         private String text = "";
+        private bool originSet = false;
 
         private void SetSize()
         {
+            originSet = false;
+
             if (Bounds.IsEmpty)
                 return;
 
@@ -72,18 +75,23 @@ namespace Flagr.UI
 
         public override void Draw(Graphics g)
         {
-            int drawX = Location.X, drawY = Location.Y;
+            if (!originSet) { 
+                int drawX = Location.X, drawY = Location.Y;
 
-            if (DrawMode == DrawMode.Centered)
-            {
-                int numWidth = (int)g.MeasureString(Text, Font).Width;
-                int numHeight = (int)g.MeasureString(Text, Font).Height;
+                if (DrawMode == DrawMode.Centered)
+                {
+                    int numWidth = (int)g.MeasureString(Text, Font).Width;
+                    int numHeight = (int)g.MeasureString(Text, Font).Height;
 
-                drawX -= numWidth / 2;
-                drawY -= numHeight / 2;
+                    drawX -= numWidth / 2;
+                    drawY -= numHeight / 2;
+                }
+
+                origin = new Point(drawX, drawY);
+                originSet = true;
             }
 
-            g.DrawString(Text, Font, new SolidBrush(Color), drawX, drawY);
+            g.DrawString(Text, Font, new SolidBrush(Color), origin.X, origin.Y);
             //g.FillRectangle(Brushes.Orange, Location.X, Location.Y, 100, 100);
         }
 

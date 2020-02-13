@@ -25,7 +25,7 @@ namespace Flagr
         private static long lastTime;
         private static DeltaTime deltaTime;
 
-        [STAThread]
+        [MTAThread]
         static void Main()
         {
             Application.EnableVisualStyles();

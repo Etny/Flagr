@@ -1477,6 +1477,16 @@ namespace Flagr.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Odometer {
+            get {
+                object obj = ResourceManager.GetObject("Odometer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap om {
             get {
                 object obj = ResourceManager.GetObject("om", resourceCulture);

@@ -34,7 +34,7 @@ namespace Flagr.UI
         public override void Draw(Graphics g)
         {
             if(flag != null && flag.IsImageLoaded)
-                g.DrawImage(flag.Image, origin.X, origin.Y);
+                g.DrawImageUnscaled(flag.Image, origin);
         }
     }
 }

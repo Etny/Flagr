@@ -22,7 +22,7 @@ namespace Flagr.States
 
         public virtual void Update(DeltaTime deltaTime) { }
 
-        public void SetCurrentState(bool current)
+        public virtual void SetCurrentState(bool current)
         {
             this.IsCurrentState = current;
         }
