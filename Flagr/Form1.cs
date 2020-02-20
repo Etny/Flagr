@@ -29,7 +29,7 @@ namespace Flagr
             BufferGraphics = Graphics.FromImage(Buffer);
             graphics = CreateGraphics();
 
-            // BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+             //BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             // BufferGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
          //   BufferGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
            // BufferGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;

@@ -39,7 +39,7 @@ namespace Flagr.States
 
                     Current.Update(deltaTime);
 
-                    alpha = ((fadeTime / FadeInDuration) * 255f);
+                    alpha = ((fadeTime / FadeOutDuration) * 255f);
 
                     if (alpha < 0 || alpha > 255) alpha = 255;
 

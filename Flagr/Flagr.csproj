@@ -89,6 +89,11 @@
     <Compile Include="InputManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="States\QuizState.cs" />
     <Compile Include="States\ResultsState.cs" />
     <Compile Include="States\StartupState.cs" />
@@ -109,14 +114,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -739,7 +739,26 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.6\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Odo1.pdn" />
+    <None Include="Resources\Odo2.pdn" />
+    <None Include="Resources\Odo3.pdn" />
+    <None Include="Resources\Odo4.pdn" />
     <None Include="Resources\Odometer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Odo0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Odo1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Odo2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Odo3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Odo4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

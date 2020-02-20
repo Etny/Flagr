@@ -218,7 +218,9 @@ namespace Flagr.States
             foreach (QuizButton b in buttons)
                 b.CorrectAnswer = (b == Correct);
 
-            if (!button.CorrectAnswer)
+            tracker.UpdateStreak(true);
+
+            if (!button.CorrectAnswer)           
                 Correct.Highlight();
             else
                 results.Score += 100;
@@ -288,11 +290,12 @@ namespace Flagr.States
         private void EndQuiz()
         {
             results.FinalizeScore();
-            Program.SetCurrentState(new TransitionState(this, results, .5f, .5f, .5f));
+            Program.SetCurrentState(new TransitionState(this, results, 1f, .5f, .5f));
         }
 
         public override void Update(DeltaTime deltaTime)
         {
+            /*
             ticks++;
             if(timer.ElapsedMilliseconds >= 1000)
             {
@@ -300,7 +303,7 @@ namespace Flagr.States
                 ticks = 0;
                 timer.Restart();
             }
-
+            */
 
             if (freezeTime > 0)
             {
@@ -325,6 +328,8 @@ namespace Flagr.States
             foreach (QuizButton b in buttons)
                 b.Update(deltaTime);
 
+            tracker.Update(deltaTime);
+
             Draw();
         }
 
@@ -341,7 +346,7 @@ namespace Flagr.States
             foreach (QuizButton b in buttons)
                 b.Draw(graphics);
 
-         //   tracker.Draw(graphics);
+            tracker.Draw(graphics);
         }
 
     }
