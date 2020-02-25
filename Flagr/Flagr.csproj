@@ -103,6 +103,7 @@
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\BezierCurve.cs" />
     <Compile Include="UI\Curve.cs" />
+    <Compile Include="UI\FadeLabel.cs" />
     <Compile Include="UI\FlagContainer.cs" />
     <Compile Include="UI\QuizButton.cs" />
     <Compile Include="UI\StreakTracker.cs" />

@@ -16,11 +16,15 @@ namespace Flagr.States
         private QuizButton[] buttons;
 
         //Question info
-        public int QuestionCount { get; set; } = 13;
+        public int QuestionCount { get; set; } = 15;
         private TextLabel QuestionCounter;
         private int currentQuestion = 0;
 
         //Scoring
+        private int score = 0;
+        private readonly int scorePerFlag = 100;
+        private TextLabel scoreLabel;
+        private FadeLabel scoreAddLabel;
         private ResultsState results;
         private StreakTracker tracker;
 
@@ -79,10 +83,31 @@ namespace Flagr.States
             };
 
             //Set scoring
-            results = new ResultsState();
+            results = new ResultsState()
+            {
+                Questions = QuestionCount,
+                ScorePerAnswer = scorePerFlag
+            };
             tracker = new StreakTracker()
             {
-                Location = new Point(150, Program.Height - 150)
+                Location = new Point(150, Program.Height - 180)
+            };
+            scoreLabel = new TextLabel()
+            {
+                Font = new Font("Arial", 30, FontStyle.Bold),
+                DrawMode = UI.DrawMode.Centered,
+                Location = new Point(Program.Width - 200, Program.Height - 180),
+                Text = "0"
+            };
+            scoreAddLabel = new FadeLabel()
+            {
+                Font = new Font("Arial", 20, FontStyle.Bold),
+                DrawMode = UI.DrawMode.Centered,
+                Location = new Point(Program.Width - 200, Program.Height - 200),
+                Text = "0",
+                Color = Color.Green,
+                FadeTime = .8f,
+                FadeDeltaY = -100
             };
 
             //Set curve for flag movement
@@ -218,12 +243,12 @@ namespace Flagr.States
             foreach (QuizButton b in buttons)
                 b.CorrectAnswer = (b == Correct);
 
-            tracker.UpdateStreak(true);
-
-            if (!button.CorrectAnswer)           
+            if (!button.CorrectAnswer)
                 Correct.Highlight();
             else
-                results.Score += 100;
+                ScoreFlag();
+
+            tracker.UpdateStreak(button.CorrectAnswer);
 
             freezeTime = maxFreezeTime;
 
@@ -287,8 +312,22 @@ namespace Flagr.States
             }
         }
 
+        private void ScoreFlag()
+        {
+            int points = (int)(scorePerFlag * tracker.CurrentMultiplier);
+
+            score += points;
+            scoreLabel.Text = score + "";
+
+            scoreAddLabel.Text = "+"+points;
+            scoreAddLabel.StartFade();
+
+            results.CorrectAnswers++;
+        }
+
         private void EndQuiz()
         {
+            results.Score = score;
             results.FinalizeScore();
             Program.SetCurrentState(new TransitionState(this, results, 1f, .5f, .5f));
         }
@@ -329,6 +368,7 @@ namespace Flagr.States
                 b.Update(deltaTime);
 
             tracker.Update(deltaTime);
+            scoreAddLabel.Update(deltaTime);
 
             Draw();
         }
@@ -347,6 +387,8 @@ namespace Flagr.States
                 b.Draw(graphics);
 
             tracker.Draw(graphics);
+            scoreLabel.Draw(graphics);
+            scoreAddLabel.Draw(graphics);
         }
 
     }

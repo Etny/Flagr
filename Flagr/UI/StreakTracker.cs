@@ -9,21 +9,25 @@ namespace Flagr.UI
 {
     class StreakTracker : UIElement
     {
-
+        
         public int CurrentStreak { get; protected set; }
+        public double CurrentMultiplier { get { return multipliers[CurrentStreak]; } }
 
         private int maxStreak = 4;
 
         private Image[] odometers;
         private float scale = .4f;
-
         Pen pointerPen;
         Point centerPoint;
         Point endPoint = Point.Empty;
 
-        private float[] targets = { 80, 105, 150, 205, 280};
+        private int[] targets = { 80, 105, 160, 220, 280 };
+        private int[] wiggle = { 0, 0, 0, 12, 20 };
+        private int[] speeds = { 240, 240, 360, 480, 600 };
+        private double[] multipliers = { 1d, 1.2d, 1.4d, 1.7d, 2d };
         private float rotation = 80;
-        private float rotationSpeed = 120f;
+
+        private Random rng;
 
         private int radius = 75;
 
@@ -42,6 +46,8 @@ namespace Flagr.UI
             pointerPen = new Pen(Brushes.Black, 8);
             pointerPen.SetLineCap(System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.DashCap.Round);
             centerPoint = new Point(origin.X + odometers[0].Width / 2, origin.Y + odometers[0].Height / 2 + 3);
+
+            rng = new Random();
 
             DrawMode = DrawMode.Centered;
         }
@@ -72,17 +78,21 @@ namespace Flagr.UI
 
         private void UpdatePointer(DeltaTime deltaTime)
         {
-            float target = targets[CurrentStreak];
+            float target = targets[CurrentStreak] + (rng.Next(0, wiggle[CurrentStreak]) - wiggle[CurrentStreak]/2);
+            float rotationSpeed = speeds[CurrentStreak];
 
             if(rotation != target)
             {
-                if (rotation > target)
-                    rotation -= (rotationSpeed * deltaTime.Seconds);
-                else
-                    rotation += (rotationSpeed * deltaTime.Seconds);
-            }
+                float dif = target - rotation;
+                float move = (rotationSpeed * deltaTime.Seconds);
 
-            //float radius = (float)odometers[0].Width / 2;
+                if (Util.AbsoluteFloat(dif) < Util.AbsoluteFloat(move)) move = Util.AbsoluteFloat(dif);
+
+                if (dif < 0)
+                    move *= -1;
+
+                rotation += move;
+            }
 
             endPoint.X = centerPoint.X + (int)(radius * Math.Cos(Util.DegreeToRadian(rotation+90)));
             endPoint.Y = centerPoint.Y + (int)(radius * Math.Sin(Util.DegreeToRadian(rotation+90)));

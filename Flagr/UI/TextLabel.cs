@@ -53,9 +53,9 @@ namespace Flagr.UI
         private Font textFont = Program.AppForm.Font;
         private Font defaultFont = Program.AppForm.Font;
         private String text = "";
-        private bool originSet = false;
+        protected bool originSet = false;
 
-        private void SetSize()
+        protected void SetSize()
         {
             originSet = false;
 
@@ -95,5 +95,17 @@ namespace Flagr.UI
             //g.FillRectangle(Brushes.Orange, Location.X, Location.Y, 100, 100);
         }
 
+        public TextLabel Clone()
+        {
+            return new TextLabel()
+            {
+                Text = this.text,
+                Color = this.Color,
+                Location = this.Location,
+                DrawMode = this.DrawMode,
+                Bounds = this.Bounds,
+                Font = this.Font
+            };
+        }
     }
 }

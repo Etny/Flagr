@@ -32,5 +32,10 @@ namespace Flagr
         {
             return (float)(angle * (180.0 / Math.PI));
         }
+
+        public static float AbsoluteFloat(float f)
+        {
+            return f < 0 ? -f : f;
+        }
     }
 }
