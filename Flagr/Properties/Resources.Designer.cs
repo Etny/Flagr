@@ -715,6 +715,38 @@ namespace Flagr.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;flags&gt;
+        ///  &lt;flag&gt;
+        ///    &lt;country&gt;Afghanistan&lt;/country&gt;
+        ///    &lt;image&gt;af&lt;/image&gt;
+        ///    &lt;scale&gt;0.8443029&lt;/scale&gt;
+        ///    &lt;width&gt;550&lt;/width&gt;
+        ///    &lt;height&gt;367&lt;/height&gt;
+        ///  &lt;/flag&gt;
+        ///  &lt;flag&gt;
+        ///    &lt;country&gt;Albania&lt;/country&gt;
+        ///    &lt;image&gt;al&lt;/image&gt;
+        ///    &lt;scale&gt;0.7884457&lt;/scale&gt;
+        ///    &lt;width&gt;550&lt;/width&gt;
+        ///    &lt;height&gt;393&lt;/height&gt;
+        ///  &lt;/flag&gt;
+        ///  &lt;flag&gt;
+        ///    &lt;country&gt;Algeria&lt;/country&gt;
+        ///    &lt;image&gt;dz&lt;/image&gt;
+        ///    &lt;scale&gt;0.8443029&lt;/scale&gt;
+        ///    &lt;width&gt;550&lt;/width&gt;
+        ///    &lt;height&gt;367&lt;/height&gt;
+        ///  &lt;/flag&gt;
+        ///  &lt;flag&gt;
+        ///    &lt;country&gt;Andorra&lt; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string flagData {
+            get {
+                return ResourceManager.GetString("flagData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap fm {

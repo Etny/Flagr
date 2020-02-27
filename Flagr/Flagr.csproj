@@ -761,6 +761,9 @@
   <ItemGroup>
     <None Include="Resources\Odo4.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flagData.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

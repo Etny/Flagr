@@ -66,14 +66,15 @@ namespace Flagr.States
         {
             if (CorrectAnswers >= Questions) return Grade.Splus;
 
-            int maxScore = (Questions * 2 * ScorePerAnswer) - (270);
-            float ratio = (float)Score / (float)maxScore;
+            //int maxScore = (Questions * 2 * ScorePerAnswer) - (270);
+            //float ratio = (float)Score / (float)maxScore;
+            float ratio = ((float)CorrectAnswers / (float)Questions);
 
             Grade currentGrade = Grade.Error;
 
             foreach(Grade g in grades)
             {
-                if (ratio < g.requiredRatio)
+                if (ratio <= g.requiredRatio)
                     break;
 
                 currentGrade = g;
@@ -122,18 +123,18 @@ namespace Flagr.States
             answersLabel.Draw(graphics);
         }
 
-        private struct Grade
+        private class Grade
         {
             public static readonly Grade F = new Grade("F", Color.Gray, 0f);
-            public static readonly Grade Dminus = new Grade("D-", Color.Purple, .10f);
-            public static readonly Grade D = new Grade("D", Color.DarkViolet, .20f);
-            public static readonly Grade C = new Grade("C", Color.DarkCyan, .25f);
-            public static readonly Grade Cplus = new Grade("C+", Color.Cyan, .35f);
-            public static readonly Grade B = new Grade("B", Color.Gold, .5f);
-            public static readonly Grade Bplus = new Grade("B+", Color.Yellow, .6f);
-            public static readonly Grade A = new Grade("A", Color.LightGreen, .8f);
-            public static readonly Grade Aplus = new Grade("A+", Color.Green, .9f);
-            public static readonly Grade S = new Grade("S", Color.Orange, .95f);
+            public static readonly Grade Dminus = new Grade("D-", Color.Purple, .25f);
+            public static readonly Grade D = new Grade("D", Color.DarkViolet, .30f);
+            public static readonly Grade C = new Grade("C", Color.DarkCyan, .45f);
+            public static readonly Grade Cplus = new Grade("C+", Color.Cyan, .6f);
+            public static readonly Grade B = new Grade("B", Color.Gold, .65f);
+            public static readonly Grade Bplus = new Grade("B+", Color.Yellow, .70f);
+            public static readonly Grade A = new Grade("A", Color.LightGreen, .80f);
+            public static readonly Grade Aplus = new Grade("A+", Color.Green, .85f);
+            public static readonly Grade S = new Grade("S", Color.Orange, .90f);
             public static readonly Grade Splus = new Grade("S+", Color.Red, 1f);
 
             public static readonly Grade Error = new Grade("Error", Color.LightCoral, 0f);
