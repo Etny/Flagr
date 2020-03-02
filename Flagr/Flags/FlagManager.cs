@@ -18,15 +18,15 @@ namespace Flagr.Flags
         XmlDocument doc;
         XmlElement flagElement;
 
-        private readonly int MaxWidth;
-        private readonly int MaxHeight;
+        public readonly int MaxWidth;
+        public readonly int MaxHeight;
 
         public FlagManager()
         {
             rng = new Random();
 
-            MaxWidth = Program.Width / 3;
-            MaxHeight = Program.Height / 3;
+            MaxWidth = 425;
+            MaxHeight = (int)(Program.Height / 2.5);
         }
 
         public Flag GetRandomFlag()
@@ -47,11 +47,7 @@ namespace Flagr.Flags
             XmlNodeList flagList = doc.DocumentElement.ChildNodes;
            
             for(int i = 0; i < flagList.Count; i++)
-            {
-                XmlNode node = flagList.Item(i);
-
-                flags.Add(new Flag(node, MaxWidth, MaxHeight));
-            }
+                flags.Add(new Flag(flagList.Item(i), MaxWidth, MaxHeight));
         }
 
         private void CreateXml()

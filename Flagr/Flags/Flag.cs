@@ -21,7 +21,8 @@ namespace Flagr.Flags
         {
             Country = node["country"].InnerText;
             ImageName = node["image"].InnerText;
-            Scale = float.Parse(node["scale"].InnerText);
+            //Scale = float.Parse(node["scale"].InnerText);
+            Scale = 1;
 
             int baseWidth = int.Parse(node["width"].InnerText);
             int baseHeight = int.Parse(node["height"].InnerText);
@@ -44,23 +45,30 @@ namespace Flagr.Flags
             if (baseWidth > MaxWidth)
                 Scale = (float)((float)MaxWidth / (float)baseWidth);
 
-            if ((int)(baseHeight * Scale) > MaxHeight)
-                Scale = (float)((float)MaxHeight / (float)(baseHeight * Scale));
+            if ((baseHeight * Scale) > MaxHeight)
+                Scale = (float)((float)MaxHeight / (float)baseHeight);
+
+            //Console.WriteLine("{0}, {1}", (scaledHeight * Scale1), Scale);
 
             this.ImageSize = new Size((int)(baseWidth * Scale), (int)(baseHeight * Scale));
+        }
+
+        public async void ToggleImage()
+        {
+            if (IsImageLoaded)
+                await Task.Run(() => UnloadImage());
+            else
+                await Task.Run(() => LoadImage());
         }
 
         public void LoadImage()
         {
             Bitmap img = (Bitmap)Properties.Resources.ResourceManager.GetObject(ImageName);
 
-            int ScaledWidth = (int)(img.Width * Scale);
-            int ScaledHeight = (int)(img.Height * Scale);
-
-            Image = new Bitmap(ScaledWidth, ScaledHeight);
+            Image = new Bitmap(ImageSize.Width, ImageSize.Height);
             Graphics tempGraphics = Graphics.FromImage(Image);
 
-            tempGraphics.DrawImage(img, 0, 0, ScaledWidth, ScaledHeight);
+            tempGraphics.DrawImage(img, 0, 0, ImageSize.Width, ImageSize.Height);
             tempGraphics.Dispose();
 
             img.Dispose();

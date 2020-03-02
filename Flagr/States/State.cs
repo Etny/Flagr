@@ -27,6 +27,8 @@ namespace Flagr.States
             this.IsCurrentState = current;
         }
 
+        public virtual void Scroll(MouseEventArgs e) { }
+
         private void KeyDownCheck(KeyEventArgs e, bool repeating)
         {
             if(IsCurrentState) KeyPressed(e, repeating);

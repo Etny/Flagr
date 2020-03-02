@@ -60,6 +60,7 @@ namespace Flagr
             s.SetCurrentState(true);
         }
 
+
         public static void Update()
         {
             int delta = (int)(timer.ElapsedMilliseconds - lastTime);

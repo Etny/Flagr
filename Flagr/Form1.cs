@@ -38,8 +38,14 @@ namespace Flagr
           //  SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
             this.Load += Form1_Load;
+            this.MouseWheel += Form1_MouseWheel;
 
          //  this.Canvas.Image = Buffer;
+        }
+
+        private void Form1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            Program.CurrentState.Scroll(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)

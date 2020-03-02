@@ -94,6 +94,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="States\GalleryState.cs" />
     <Compile Include="States\QuizState.cs" />
     <Compile Include="States\ResultsState.cs" />
     <Compile Include="States\StartupState.cs" />
