@@ -42,7 +42,7 @@ namespace Flagr.States
         private readonly int buttonWidth = 300;
         private readonly int buttonHeight = 60;
         private readonly int buttonSpacing = 26;
-        private readonly int buttonTop = Program.Height / 2 + 100;
+        private readonly int buttonTop = (Program.Height / 10) * 7;
 
         //Keys mapped to answer buttons
         private readonly List<Keys> buttonKeys = new List<Keys>()
@@ -90,25 +90,27 @@ namespace Flagr.States
             };
             tracker = new StreakTracker()
             {
-                Location = new Point(150, Program.Height - 180)
+                Location = new Point(150, buttonTop + buttonHeight + (buttonSpacing / 2))
             };
             scoreLabel = new TextLabel()
             {
                 Font = new Font("Arial", 30, FontStyle.Bold),
                 DrawMode = UI.DrawMode.Centered,
-                Location = new Point(Program.Width - 200, Program.Height - 180),
+                Location = new Point(Program.Width - 200, buttonTop + buttonHeight + (buttonSpacing / 2)),
                 Text = "0"
             };
             scoreAddLabel = new FadeLabel()
             {
                 Font = new Font("Arial", 20, FontStyle.Bold),
                 DrawMode = UI.DrawMode.Centered,
-                Location = new Point(Program.Width - 200, Program.Height - 200),
+                Location = new Point(Program.Width - 200, buttonTop + buttonHeight + (buttonSpacing / 2)),
                 Text = "0",
                 Color = Color.Green,
                 FadeTime = .8f,
                 FadeDeltaY = -100
             };
+
+            currentFlagY = QuestionCounter.Location.Y + ((buttonTop - QuestionCounter.Location.Y) / 2);
 
             //Set curve for flag movement
             bezier = new BezierCurve(new PointF[] { new PointF(1, -.4f), new PointF(0.8f, 1) }, maxFreezeTime);
@@ -264,6 +266,9 @@ namespace Flagr.States
 
         protected override void KeyPressed(KeyEventArgs e, bool repeating)
         {
+            if (e.KeyCode == Keys.R)
+                Program.SetCurrentState(new QuizState());
+
             if (!repeating && buttonKeys.Contains(e.KeyCode))
                 buttons[buttonKeys.IndexOf(e.KeyCode) % 4].Select();
         }

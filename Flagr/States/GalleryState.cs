@@ -17,9 +17,13 @@ namespace Flagr.States
         private int flagWidth;
         private int flagHeight;
 
-        private float scrollSpeed = .2f;
+        private float scrollSpeed = .5f;
         private int scrollY = 0;
         private int maxScrollY = 0;
+
+        private TextLabel NameLabel;
+
+        private UI.ScrollBar scrollBar = new UI.ScrollBar();
 
         public GalleryState()
         {
@@ -27,6 +31,12 @@ namespace Flagr.States
             flagHeight = Program.Flags.MaxHeight;
 
             PopulateContainers();
+
+            NameLabel = new TextLabel()
+            {
+                Font = new Font("Arial", 30, FontStyle.Bold),
+                Bounds = new Size(flagWidth, flagHeight)
+            };
 
             maxScrollY = (containers.Length / (Program.Width / flagWidth) - 1) * flagHeight;
         }
@@ -47,12 +57,17 @@ namespace Flagr.States
 
             if (scrollY < 0) scrollY = 0;
             if (scrollY > maxScrollY) scrollY = maxScrollY;
+
+            scrollBar.ScrollPosition = (float)((float)scrollY / (float)maxScrollY);
+            scrollBar.Popup();
         }
 
         public override void Update(DeltaTime deltaTime)
         {
 
-            SetContainerLocations();
+            UpdateContainers();
+
+            scrollBar.Update(deltaTime);
 
             Draw();
         }
@@ -62,8 +77,10 @@ namespace Flagr.States
             return -(flagHeight / 2) <= y && (Program.Height + flagHeight / 2) > y;
         }
 
-        private void SetContainerLocations()
+        private void UpdateContainers()
         {
+            Rectangle r = new Rectangle(0, 0, flagWidth, flagHeight);
+
             for (int i = 0; i < containers.Length; i++)
             {
                 FlagContainer f = containers[i];
@@ -74,7 +91,15 @@ namespace Flagr.States
                 f.Location = new Point(x, y);
                 
                 if (IsVisible(y) != f.Flag.IsImageLoaded)
-                    f.Flag.ToggleImage();              
+                    f.Flag.ToggleImage();
+
+                r.Location = f.GetOrigin();
+
+                if (r.Contains(Program.Input.MouseLocation))
+                {
+                    NameLabel.SetLocation(x, y);
+                    NameLabel.Text = f.Flag.Country;
+                }
             }
         }
 
@@ -85,6 +110,8 @@ namespace Flagr.States
             foreach (FlagContainer f in containers)
                 f.Draw(graphics);
 
+            scrollBar.Draw(graphics);
+            NameLabel.Draw(graphics);
         }
     }
 }

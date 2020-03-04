@@ -107,6 +107,7 @@
     <Compile Include="UI\FadeLabel.cs" />
     <Compile Include="UI\FlagContainer.cs" />
     <Compile Include="UI\QuizButton.cs" />
+    <Compile Include="UI\ScrollBar.cs" />
     <Compile Include="UI\StreakTracker.cs" />
     <Compile Include="UI\TextLabel.cs" />
     <Compile Include="UI\UIElement.cs" />
