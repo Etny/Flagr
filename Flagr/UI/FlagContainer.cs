@@ -10,6 +10,8 @@ namespace Flagr.UI
 {
     class FlagContainer : UIElement
     {
+        public bool DrawPlaceholder = false;
+
         public Flag Flag
         {
             get
@@ -33,8 +35,20 @@ namespace Flagr.UI
 
         public override void Draw(Graphics g)
         {
-            if(flag != null && flag.IsImageLoaded)
-                g.DrawImageUnscaled(flag.Image, origin);
+            if (flag == null)
+                return;
+
+            if (flag.IsImageLoaded)
+            {
+                var temp = g.InterpolationMode;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                
+                g.DrawImage(flag.Image, origin);
+
+                g.InterpolationMode = temp;
+            }
+            else if (DrawPlaceholder)
+                g.FillRectangle(Brushes.Gray, origin.X, origin.Y, flag.ImageSize.Width, flag.ImageSize.Height);
         }
     }
 }

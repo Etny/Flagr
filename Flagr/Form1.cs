@@ -17,9 +17,8 @@ namespace Flagr
 
         public static Bitmap Buffer;
         public static Graphics BufferGraphics;
-        private Graphics graphics;
 
-        private Stopwatch timer;
+        public static Stopwatch timer;
 
         public Form1()
         {
@@ -27,16 +26,9 @@ namespace Flagr
 
             Buffer = new Bitmap(Program.Width, Program.Height);
             BufferGraphics = Graphics.FromImage(Buffer);
-            graphics = CreateGraphics();
 
-             //BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            // BufferGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-         //   BufferGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-           // BufferGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
            
-         //   SetStyle(ControlStyles.UserPaint, true);
-          //  SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-
+       
             this.Load += Form1_Load;
             this.MouseWheel += Form1_MouseWheel;
 
@@ -50,6 +42,8 @@ namespace Flagr
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            Program.Update();
+
             e.Graphics.DrawImageUnscaled(Buffer, -1, 0);
 
             base.OnPaint(e);

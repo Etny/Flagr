@@ -9,9 +9,9 @@ namespace Flagr
     class DeltaTime
     {
         public float Seconds { get; set; }
-        public int Milliseconds { get; set; }
+        public long Milliseconds { get; set; }
 
-        public DeltaTime Set(int Milliseconds)
+        public DeltaTime Set(long Milliseconds)
         {
             this.Milliseconds = Milliseconds;
             this.Seconds = (float)(Milliseconds / 1000f);

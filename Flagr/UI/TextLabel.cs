@@ -11,8 +11,13 @@ namespace Flagr.UI
     class TextLabel : UIElement
     {
 
-        public Color Color { get; set; } = Color.Black;
-        public Size Bounds { get; set; } = Size.Empty;
+        public Color Color = Color.Black;
+        public Color BackdropColor = Color.White;
+
+        public int BackdropSpacing = 10;
+        public Size Bounds = Size.Empty;
+
+        public bool DrawBackdrop = false;
 
 
         public TextLabel()
@@ -55,6 +60,9 @@ namespace Flagr.UI
         private String text = "";
         protected bool originSet = false;
 
+        private Size backdropSize = Size.Empty;
+        private Point backDropLocation = Point.Empty;
+
         protected void SetSize()
         {
             originSet = false;
@@ -62,15 +70,25 @@ namespace Flagr.UI
             if (Bounds.IsEmpty)
                 return;
 
-            for (int i = 0; i < 9999; i++)
-            {
-                Size textSize = Form1.BufferGraphics.MeasureString(Text, Font).ToSize();
+            Size textSize = Form1.BufferGraphics.MeasureString(Text, Font).ToSize();
 
+            while (textFont.SizeInPoints > 1)
+            {
                 if (textSize.Width <= Bounds.Width && textSize.Height <= Bounds.Height)
                     break;
 
                 textFont = new Font(Font.FontFamily, Font.SizeInPoints - 1, Font.Style);
+
+                textSize = Form1.BufferGraphics.MeasureString(Text, Font).ToSize();
             }
+
+            backdropSize.Width = textSize.Width + (BackdropSpacing * 2);
+            backdropSize.Height = textSize.Height + (BackdropSpacing * 2);
+        }
+
+        public Size GetTextSize()
+        {
+            return Form1.BufferGraphics.MeasureString(Text, Font).ToSize();
         }
 
         public override void Draw(Graphics g)
@@ -86,10 +104,16 @@ namespace Flagr.UI
                     drawX -= numWidth / 2;
                     drawY -= numHeight / 2;
                 }
+                    
+                backDropLocation.X = drawX - BackdropSpacing;
+                backDropLocation.Y = drawY - BackdropSpacing;
 
                 origin = new Point(drawX, drawY);
                 originSet = true;
             }
+
+            if (DrawBackdrop)
+                g.FillRectangle(new SolidBrush(BackdropColor), backDropLocation.X, backDropLocation.Y, backdropSize.Width, backdropSize.Height);
 
             g.DrawString(Text, Font, new SolidBrush(Color), origin.X, origin.Y);
             //g.FillRectangle(Brushes.Orange, Location.X, Location.Y, 100, 100);

@@ -29,7 +29,7 @@ namespace Flagr.States
             graphics.DrawImageUnscaled(flag.Image, 0, 0);
             graphics.DrawString(flag.Country, Form1.DefaultFont, Brushes.Black, 400, 400);
 
-            x -= deltaTime.Milliseconds;
+            x -= (int)deltaTime.Milliseconds;
 
             if(x <= 0)
             {

@@ -21,7 +21,6 @@ namespace Flagr
         public static readonly int Width = 1281;
         public static readonly int Height = 720;
 
-        private static Stopwatch timer;
         private static long lastTime;
         private static DeltaTime deltaTime;
 
@@ -35,15 +34,12 @@ namespace Flagr
             Input = new InputManager(AppForm);
             Flags = new FlagManager();
             CurrentState = new StartupState();
-
-            timer = new Stopwatch();
             deltaTime = new DeltaTime();
 
-            timer.Start();
 
-            lastTime = timer.ElapsedMilliseconds;
+          //  AppForm.Paint += AppForm_Paint;
 
-            AppForm.Paint += AppForm_Paint;
+            lastTime = 0;
 
             Application.Run(AppForm);
         }
@@ -63,11 +59,11 @@ namespace Flagr
 
         public static void Update()
         {
-            int delta = (int)(timer.ElapsedMilliseconds - lastTime);
+            long delta = Form1.timer.ElapsedMilliseconds - lastTime;
 
             CurrentState.Update(deltaTime.Set(delta));
 
-            lastTime = timer.ElapsedMilliseconds;
+            lastTime = Form1.timer.ElapsedMilliseconds;
         }
     }
 }
