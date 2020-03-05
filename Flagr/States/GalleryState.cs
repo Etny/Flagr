@@ -2,6 +2,7 @@
 using Flagr.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Flagr.States
         private int flagWidth;
         private int flagHeight;
 
-        private float scrollSpeed = .4f;
+        private float scrollSpeed = 1;
         private int scrollY = 0;
         private int maxScrollY = 0;
 
@@ -26,11 +27,14 @@ namespace Flagr.States
 
         private bool drawNameLabel = false;
         private TextLabel NameLabel;
-        private float nameLabelFadeTime = 60f;
+        private float nameLabelFadeTime = .3f;
         private float nameLabelFade = 0f;
         private Point lastMouseLocation = Point.Empty;
 
         private UI.ScrollBar scrollBar = new UI.ScrollBar();
+
+        private Stopwatch timer;
+        private long last = 0;
 
         public GalleryState()
         {
@@ -38,6 +42,9 @@ namespace Flagr.States
             flagHeight = Program.Flags.MaxHeight;
 
             PopulateContainers();
+
+            maxScrollY = (containers.Length / 3) * flagHeight;
+
             SetContainerLocations();
 
             NameLabel = new TextLabel()
@@ -48,7 +55,7 @@ namespace Flagr.States
                 BackdropSpacing = 0
             };
 
-            maxScrollY = (containers.Length / (Program.Width / flagWidth) - 1) * flagHeight;
+            timer = new Stopwatch();
         }
 
         private void PopulateContainers()
@@ -71,13 +78,18 @@ namespace Flagr.States
             scrollBar.ScrollPosition = (float)((float)scrollY / (float)maxScrollY);
             scrollBar.Popup();
 
-            SetContainerLocations();
-
             lastMouseLocation.Y = -1;
+
+            SetContainerLocations();
         }
 
         public override void Update(DeltaTime deltaTime)
         {
+            if (!timer.IsRunning)
+                timer.Start();
+
+          //  Console.WriteLine("{0} {1}", (float)((timer.ElapsedMilliseconds - last)/1000f), deltaTime.Seconds);
+
 
             UpdateContainers();
 
@@ -91,26 +103,31 @@ namespace Flagr.States
 
             scrollBar.Update(deltaTime);
 
-            //Console.WriteLine(nameLabelFade);
+           // Console.WriteLine(deltaTime.Milliseconds);
+           // Console.WriteLine(nameLabelFade);
 
             Draw();
+
+
+            last = timer.ElapsedMilliseconds;
         }
 
         private bool IsVisible(int y)
         {
-            return -(flagHeight / 2) <= y && (Program.Height + flagHeight / 2) > y;
+            return -(flagHeight / 2) <= y && (Program.Height + flagHeight / 2) >= y;
         }
 
         private void SetContainerLocations()
         {
             bool firstVis = false;
+            lastDrawIndex = -1;
 
             for (int i = 0; i < containers.Length; i++)
             {
                 FlagContainer f = containers[i];
 
-                int x = (i % 3) * flagWidth + (flagWidth / 2);
-                int y = (i / 3) * flagHeight + (flagHeight / 2) - scrollY;
+                int x = ((i % 3) * flagWidth) + (flagWidth / 2);
+                int y = ((i / 3) * flagHeight) + (flagHeight / 2) - scrollY;
 
                 f.Location = new Point(x, y);
 
@@ -129,6 +146,9 @@ namespace Flagr.States
 
                 f.DrawPlaceholder = visible;
             }
+
+            if (lastDrawIndex < 0)
+                lastDrawIndex = containers.Length - 1;
         }
 
         private void UpdateContainers()
@@ -141,7 +161,7 @@ namespace Flagr.States
             Rectangle r = new Rectangle(0, 0, flagWidth, flagHeight);
             bool nameSet = false;
 
-            for (int i = 0; i < containers.Length; i++)
+            for (int i = firstDrawIndex; i <= lastDrawIndex; i++)
             {
                 FlagContainer f = containers[i];
 
@@ -171,7 +191,7 @@ namespace Flagr.States
             for(int i = firstDrawIndex; i <= lastDrawIndex; i++)
             {
                 FlagContainer f = containers[i];
-                if (f.DrawPlaceholder) f.Draw(graphics);
+                f.Draw(graphics);
             }
 
             scrollBar.Draw(graphics);
@@ -182,7 +202,6 @@ namespace Flagr.States
 
                 NameLabel.Color = Color.FromArgb((NameLabel.Color.ToArgb() & 0x00FFFFFF) | alpha << 24);
                 NameLabel.BackdropColor = Color.FromArgb((NameLabel.BackdropColor.ToArgb() & 0x00FFFFFF) | alpha << 24);
-
 
                 NameLabel.Draw(graphics);
             }

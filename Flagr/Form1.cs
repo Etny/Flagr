@@ -26,8 +26,6 @@ namespace Flagr
 
             Buffer = new Bitmap(Program.Width, Program.Height);
             BufferGraphics = Graphics.FromImage(Buffer);
-
-           
        
             this.Load += Form1_Load;
             this.MouseWheel += Form1_MouseWheel;
@@ -46,7 +44,7 @@ namespace Flagr
 
             e.Graphics.DrawImageUnscaled(Buffer, -1, 0);
 
-            base.OnPaint(e);
+          //  base.OnPaint(e);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -63,8 +61,8 @@ namespace Flagr
         private void Run()
         {
             int target = 5;
-            long last = 0;
-            int delta = 0;
+            long last;
+            int delta;
 
             timer.Start();
 

@@ -24,6 +24,8 @@ namespace Flagr
         private static long lastTime;
         private static DeltaTime deltaTime;
 
+        private static Stopwatch pleaseGodWork;
+
         [MTAThread]
         static void Main()
         {
@@ -37,8 +39,9 @@ namespace Flagr
             deltaTime = new DeltaTime();
 
 
-          //  AppForm.Paint += AppForm_Paint;
-
+            //  AppForm.Paint += AppForm_Paint;
+            pleaseGodWork = new Stopwatch();
+            pleaseGodWork.Start();
             lastTime = 0;
 
             Application.Run(AppForm);
@@ -59,11 +62,11 @@ namespace Flagr
 
         public static void Update()
         {
-            long delta = Form1.timer.ElapsedMilliseconds - lastTime;
+            long delta = pleaseGodWork.ElapsedMilliseconds - lastTime;
 
             CurrentState.Update(deltaTime.Set(delta));
 
-            lastTime = Form1.timer.ElapsedMilliseconds;
+            lastTime = pleaseGodWork.ElapsedMilliseconds;
         }
     }
 }

@@ -40,12 +40,12 @@ namespace Flagr.UI
 
             if (flag.IsImageLoaded)
             {
-                var temp = g.InterpolationMode;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                //var temp = g.InterpolationMode;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
                 
                 g.DrawImage(flag.Image, origin);
 
-                g.InterpolationMode = temp;
+              //  g.InterpolationMode = temp;
             }
             else if (DrawPlaceholder)
                 g.FillRectangle(Brushes.Gray, origin.X, origin.Y, flag.ImageSize.Width, flag.ImageSize.Height);
