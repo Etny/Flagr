@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<boats>
+  <boat>
+    <image>sail1</image>
+    <flagX>288</flagX>
+    <flagY>120</flagY>
+    <flagHeight>115</flagHeight>
+    <numX>147</numX>
+    <numY>144</numY>
+    <watersink>30</watersink>
+    <speed>1</speed>
+  </boat>
+</boats>

@@ -97,10 +97,12 @@
     <Compile Include="States\GalleryState.cs" />
     <Compile Include="States\QuizState.cs" />
     <Compile Include="States\ResultsState.cs" />
+    <Compile Include="States\SpeedState.cs" />
     <Compile Include="States\StartupState.cs" />
     <Compile Include="States\State.cs" />
     <Compile Include="States\TestState.cs" />
     <Compile Include="States\TransitionState.cs" />
+    <Compile Include="UI\Boat.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\BezierCurve.cs" />
     <Compile Include="UI\Curve.cs" />
@@ -765,6 +767,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\flagData.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\boats\sail1.png" />
+    <Content Include="Resources\boatData.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

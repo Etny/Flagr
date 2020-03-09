@@ -188,11 +188,8 @@ namespace Flagr.States
         {
             graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
 
-            for(int i = firstDrawIndex; i <= lastDrawIndex; i++)
-            {
-                FlagContainer f = containers[i];
-                f.Draw(graphics);
-            }
+            for (int i = firstDrawIndex; i <= lastDrawIndex; i++)
+                containers[i].Draw(graphics);
 
             scrollBar.Draw(graphics);
 

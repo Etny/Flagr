@@ -82,5 +82,20 @@ namespace Flagr.Flags
             if(Image != null) Image.Dispose();
         }
 
+        public Flag getDifferentSize(int MaxWidth, int MaxHeight)
+        {
+            bool wasLoaded = IsImageLoaded;
+
+            if (!wasLoaded)
+                LoadImage();
+
+            Flag f = new Flag(Image, Country, ImageName, MaxWidth, MaxHeight);
+
+            if (!wasLoaded)
+                UnloadImage();
+
+            return f;
+        }
+
     }
 }

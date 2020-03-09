@@ -29,7 +29,7 @@ namespace Flagr.States
             }
             else
             {
-                Program.SetCurrentState(new GalleryState());
+                Program.SetCurrentState(new SpeedState());
             }
         }
     }

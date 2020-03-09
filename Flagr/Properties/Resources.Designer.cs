@@ -311,6 +311,27 @@ namespace Flagr.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///
+        ///&lt;boats&gt;
+        ///  &lt;boat&gt;
+        ///    &lt;image&gt;sail1&lt;/image&gt;
+        ///    &lt;flagX&gt;393&lt;/flagX&gt;
+        ///    &lt;flagY&gt;132&lt;/flagY&gt;
+        ///    &lt;numX&gt;147&lt;/numX&gt;
+        ///    &lt;numY&gt;144&lt;/numY&gt;
+        ///    &lt;speed&gt;1&lt;/speed&gt;
+        ///  &lt;/boat&gt;
+        ///&lt;/boats&gt;
+        ///.
+        /// </summary>
+        internal static string boatData {
+            get {
+                return ResourceManager.GetString("boatData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap br {
@@ -1742,6 +1763,16 @@ namespace Flagr.Properties {
         internal static System.Drawing.Bitmap sa {
             get {
                 object obj = ResourceManager.GetObject("sa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sail1 {
+            get {
+                object obj = ResourceManager.GetObject("sail1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
