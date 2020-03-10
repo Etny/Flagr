@@ -42,7 +42,7 @@ namespace Flagr
         {
             Program.Update();
 
-            e.Graphics.DrawImageUnscaled(Buffer, -1, 0);
+            e.Graphics.DrawImageUnscaled(Buffer, 0, 0);
 
           //  base.OnPaint(e);
         }

@@ -18,7 +18,7 @@ namespace Flagr
         public static FlagManager Flags;
         public static InputManager Input;
 
-        public static readonly int Width = 1281;
+        public static readonly int Width = 1280;
         public static readonly int Height = 720;
 
         private static long lastTime;

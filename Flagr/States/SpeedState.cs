@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Flagr.States
@@ -16,14 +17,18 @@ namespace Flagr.States
         private List<Boat> boats = new List<Boat>();
 
         private int waterLine = Program.Height / 2;
-        private int waterHeight = 200;
+        private int waterHeight = 150;
+        private int waterPoints = 11;
         private Color waterColor = Color.DeepSkyBlue;
+        private FancyWater water;
 
         private float boatScale = .75f;
 
 
         public SpeedState()
         {
+            water = new FancyWater(waterLine, waterHeight, waterPoints, waterColor);
+
             ParseBoatData();
 
             AddBoat(boatNode);
@@ -50,8 +55,14 @@ namespace Flagr.States
             boats.Add(boat);
         }
 
+        public override void Scroll(MouseEventArgs e)
+        {
+            water.MovePoint(5, Math.Sign(e.Delta) * 5);
+        }
+
         public override void Update(DeltaTime deltaTime)
         {
+            water.Update(deltaTime);
 
             Draw();
         }
@@ -63,7 +74,7 @@ namespace Flagr.States
             foreach (Boat boat in boats)
                 boat.Draw(graphics);
 
-            graphics.FillRectangle(new SolidBrush(waterColor), 0, waterLine, Program.Width, waterHeight);
+            water.Draw(graphics);
         }
 
     }
