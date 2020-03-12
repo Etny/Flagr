@@ -86,6 +86,11 @@ namespace Flagr.UI
             backdropSize.Height = textSize.Height + (BackdropSpacing * 2);
         }
 
+        protected override void SetOrigin()
+        {
+            originSet = false;
+        }
+
         public Size GetTextSize()
         {
             return Form1.BufferGraphics.MeasureString(Text, Font).ToSize();

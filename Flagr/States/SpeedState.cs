@@ -13,25 +13,34 @@ namespace Flagr.States
     class SpeedState : State
     {
 
-        private XmlNode boatNode;
+        private List<Boat> boatTemplates = new List<Boat>();
         private List<Boat> boats = new List<Boat>();
+        private float boatSpeed = 100f;
 
-        private int waterLine = Program.Height / 2;
+        public static int WaterLine = Program.Height / 5 * 2;
         private int waterHeight = 150;
-        private int waterPoints = 11;
+        private int waterPoints = 41;
         private Color waterColor = Color.DeepSkyBlue;
         private FancyWater water;
 
         private float boatScale = .75f;
 
+        private AnswerBlock[] blocks;
+
 
         public SpeedState()
         {
-            water = new FancyWater(waterLine, waterHeight, waterPoints, waterColor);
+            water = new FancyWater(WaterLine, waterHeight, waterPoints, waterColor);
+
+            Size blockSize = new Size(Program.Width / 3 + 1, Program.Height - (WaterLine + waterHeight));
+            blocks = new AnswerBlock[3];
+            blocks[0] = new AnswerBlock(new Point(0, WaterLine + waterHeight), Color.Red, blockSize, "A", 0);
+            blocks[1] = new AnswerBlock(new Point(blockSize.Width, WaterLine + waterHeight), Color.Green, blockSize, "B", 1);
+            blocks[2] = new AnswerBlock(new Point(blockSize.Width * 2, WaterLine + waterHeight), Color.Blue, blockSize, "C", 2);
 
             ParseBoatData();
 
-            AddBoat(boatNode);
+            AddBoat();
         }
 
         private void ParseBoatData()
@@ -41,28 +50,42 @@ namespace Flagr.States
 
             XmlNodeList boatList = doc.DocumentElement.ChildNodes;
 
-            boatNode = boatList.Item(0);
+            for(int i = 0; i < boatList.Count; i++)
+                boatTemplates.Add(new Boat(boatList.Item(i), boatScale));
         }
 
-        private void AddBoat(XmlNode boatNode)
+        private void AddBoat()
         {
-            Boat boat = new Boat(boatNode, boatScale);
+            Boat boat = boatTemplates[0].Clone();
 
-            boat.SetLocation(Program.Width / 2, waterLine - boat.Size.Height + boat.Weight);
-            boat.SetFlag(Program.Flags.GetRandomFlag());
-            boat.Container.Flag.LoadImage();
+            foreach(AnswerBlock block in blocks)
+            {
+                if (block.Enabled)
+                    continue;
+
+                block.NewQuestion(boat);
+                break;
+            }
 
             boats.Add(boat);
         }
 
         public override void Scroll(MouseEventArgs e)
         {
-            water.MovePoint(5, Math.Sign(e.Delta) * 5);
+            water.MovePoint(water.ClosestPoint(Program.Input.MouseLocation.X), Math.Sign(e.Delta) * 5);
+
+            if(boats.Count < 3) AddBoat();
         }
 
         public override void Update(DeltaTime deltaTime)
         {
             water.Update(deltaTime);
+
+            foreach (Boat boat in boats)
+                boat.Update(deltaTime, water, boatSpeed);
+
+            foreach (AnswerBlock block in blocks)
+                block.Update(deltaTime);
 
             Draw();
         }
@@ -73,6 +96,9 @@ namespace Flagr.States
 
             foreach (Boat boat in boats)
                 boat.Draw(graphics);
+
+            foreach (AnswerBlock block in blocks)
+                block.Draw(graphics);
 
             water.Draw(graphics);
         }

@@ -104,6 +104,7 @@
     <Compile Include="States\State.cs" />
     <Compile Include="States\TestState.cs" />
     <Compile Include="States\TransitionState.cs" />
+    <Compile Include="UI\AnswerBlock.cs" />
     <Compile Include="UI\Boat.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\BezierCurve.cs" />

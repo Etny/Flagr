@@ -16,18 +16,22 @@ namespace Flagr.UI
         private int line, height, surfacePoints;
         private Brush waterBrush;
 
-        private float cutoff = 0f;
-        private float k = .02f; //Spring Constant
+        private float cutoff = 1.2f;
+        private float k = .025f; //Spring Constant
+        private float maxHeight = 50;
         private float dampening = .05f;
         private float spread = .01f;
         private float[] pointVel;
         private float[] deltaHeight;
+
+        private int pointDistance = 100;
 
         public FancyWater(int waterline, int waterHeight, int surfacePoints, Color waterColor)
         {
             line = waterline;
             height = waterHeight;
             this.surfacePoints = surfacePoints;
+           // dampening /= (surfacePoints - 1) / 20;
 
             waterBrush = new LinearGradientBrush(
                 new Point(Program.Width / 2, line), 
@@ -44,8 +48,6 @@ namespace Flagr.UI
         //Coulnd't get this to work with deltaTime. Since it's just a misc visual effect I don't think it's worth the time to fix it
         private void UpdatePoint(int pointIndex, DeltaTime deltaTime)
         {
-            if (pointIndex == 5) Console.WriteLine(line - WaterPoints[pointIndex].Y + " " + pointVel[pointIndex] + " " + deltaTime.Seconds);
-
             float dif = WaterPoints[pointIndex].Y - line;
             float acc = -k * dif - (dampening * pointVel[pointIndex]);
 
@@ -56,9 +58,21 @@ namespace Flagr.UI
             if (pointIndex < surfacePoints - 1) pointVel[pointIndex + 1] += spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex + 1].Y);
         }
 
-        public void MovePoint(int index, int delta)
+        public void MovePoint(int index, float delta)
         {
             deltaHeight[index] += delta;
+        }
+
+        public int ClosestPoint(int X)
+        {
+            if (X >= Program.Width)
+                return surfacePoints - 1;
+
+            if (X <= 0)
+                return 0;
+
+            X += pointDistance / 2;
+            return (X - (X % pointDistance)) / pointDistance;
         }
 
         public void Update(DeltaTime deltaTime)
@@ -68,7 +82,15 @@ namespace Flagr.UI
 
             for (int i = 0; i < surfacePoints; i++)
             {
-                WaterPoints[i].Y += deltaHeight[i];
+                if (Math.Abs(WaterPoints[i].Y + deltaHeight[i]) - line < maxHeight)
+
+                    WaterPoints[i].Y += deltaHeight[i];
+                else
+                {
+                    WaterPoints[i].Y = (Math.Sign(deltaHeight[i]) * maxHeight) + line;
+                    //pointVel[i] = 0;
+                }
+                
                 deltaHeight[i] = 0;
             }
         }
@@ -77,7 +99,7 @@ namespace Flagr.UI
         {
             WaterPoints = new PointF[surfacePoints + 2];
 
-            int pointDistance = Program.Width / (surfacePoints - 1);
+            pointDistance = (int)Math.Ceiling((double)Program.Width / (surfacePoints - 1));
 
             for (int i = 0; i < surfacePoints; i++)
             {

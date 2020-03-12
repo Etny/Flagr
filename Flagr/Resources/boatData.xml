@@ -6,8 +6,9 @@
     <flagX>288</flagX>
     <flagY>120</flagY>
     <flagHeight>115</flagHeight>
-    <numX>147</numX>
+    <numX>94</numX>
     <numY>144</numY>
+    <disturbX>30</disturbX>
     <watersink>30</watersink>
     <speed>1</speed>
   </boat>
