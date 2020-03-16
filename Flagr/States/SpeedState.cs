@@ -15,11 +15,15 @@ namespace Flagr.States
 
         private List<Boat> boatTemplates = new List<Boat>();
         private List<Boat> boats = new List<Boat>();
-        private float boatSpeed = 100f;
+        private List<Boat> deadBoats = new List<Boat>();
+        private float boatSpeed = 160f;
+        private int maxBoats = 3;
+        private float maxBoatSpawnDelay = 2.6f;
+        private float spawnCountdown = 2.6f;
 
         public static int WaterLine = Program.Height / 5 * 2;
         private int waterHeight = 150;
-        private int waterPoints = 41;
+        private int waterPoints = 51;
         private Color waterColor = Color.DeepSkyBlue;
         private FancyWater water;
 
@@ -67,22 +71,47 @@ namespace Flagr.States
                 break;
             }
 
+            boat.CreateImage();
+
             boats.Add(boat);
+
+
+            if (boats.Count < maxBoats) spawnCountdown = maxBoatSpawnDelay;
         }
 
         public override void Scroll(MouseEventArgs e)
         {
             water.MovePoint(water.ClosestPoint(Program.Input.MouseLocation.X), Math.Sign(e.Delta) * 5);
 
-            if(boats.Count < 3) AddBoat();
+           // if(boats.Count < 3) AddBoat();
         }
 
         public override void Update(DeltaTime deltaTime)
         {
+            if(spawnCountdown > 0)
+            {
+                spawnCountdown -= deltaTime.Seconds;
+
+                if (spawnCountdown <= 0 && boats.Count < maxBoats)
+                    AddBoat();      
+            }
+
             water.Update(deltaTime);
 
             foreach (Boat boat in boats)
+            {
                 boat.Update(deltaTime, water, boatSpeed);
+                if (boat.OutOfBounds) deadBoats.Add(boat);
+            }
+
+            foreach(Boat dead in deadBoats)
+            {
+                dead.CurrentBlock.Enabled = false;
+                boats.Remove(dead);
+                if(spawnCountdown <= 0) spawnCountdown = maxBoatSpawnDelay;
+            }
+
+            deadBoats.Clear();
 
             foreach (AnswerBlock block in blocks)
                 block.Update(deltaTime);

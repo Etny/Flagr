@@ -16,7 +16,9 @@ namespace Flagr.UI
         public float Speed;
         public int Weight;
         public int FlagHeight;
+        public AnswerBlock CurrentBlock;
         public float X = (float)Program.Width + 10;
+        public bool OutOfBounds = false;
 
         public Color IndicatorColor = Color.Gray;
         public TextLabel IndicatorLabel;
@@ -26,6 +28,16 @@ namespace Flagr.UI
         protected Point numberOffset;
         protected int disturbPoint;
         protected Image image;
+        protected bool createdImage = false;
+        protected int trueWidth;
+
+        protected float SpeedMod = 1f;
+        protected float currentSpeedOffTime = 0f;
+        protected bool speedingOff = false;
+
+        protected static float maxSpeedMod = 6f;
+        protected static float speedOffTime = 1.2f;
+        protected static BezierCurve speedOffCurve = new BezierCurve(new PointF[] { new PointF(.9f, -.15f), new PointF(1f, .67f) }, speedOffTime);
 
         public Boat(XmlNode node, float scale)
         {
@@ -36,7 +48,6 @@ namespace Flagr.UI
             numberOffset = new Point((int)(int.Parse(node["numX"].InnerText) * scale), (int)(int.Parse(node["numY"].InnerText) * scale));
 
             disturbPoint = (int)(int.Parse(node["disturbX"].InnerText) * scale);
-
 
             Speed = float.Parse(node["speed"].InnerText);
             Weight = (int)(int.Parse(node["watersink"].InnerText) * scale);
@@ -66,15 +77,16 @@ namespace Flagr.UI
                 DrawMode = DrawMode.Centered
             };
         }
-    
-
-  
 
         public void SetFlag(Flag flag)
         {
             if (Container.Flag != null) Container.Flag.UnloadImage();
             Container.Flag = flag.getDifferentSize(Program.Flags.MaxWidth, FlagHeight);
             Container.Flag.LoadImage();
+
+            trueWidth = image.Width;
+            if (Container.Flag.ImageSize.Width > (trueWidth - containerOffset.X))
+                trueWidth += Container.Flag.ImageSize.Width - (trueWidth - containerOffset.X);
         }
 
         public Boat Clone()
@@ -84,7 +96,7 @@ namespace Flagr.UI
                 containerOffset = this.containerOffset,
                 numberOffset = this.numberOffset,
                 disturbPoint = this.disturbPoint,
-                image = this.image,
+                image = (Image)this.image.Clone(),
                 Speed = this.Speed,
                 Weight = this.Weight,
                 FlagHeight = this.FlagHeight,
@@ -94,29 +106,92 @@ namespace Flagr.UI
 
             return b;
         }
+        
+        public void CreateImage()
+        {
+            Image temp = new Bitmap(trueWidth, image.Height);
+
+            Graphics g = Graphics.FromImage(temp);
+
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+            Container.SetLocation(containerOffset.X, containerOffset.Y);
+            Container.Draw(g);
+
+            g.DrawImage(image, 0, 0);
+
+
+            g.FillEllipse(new SolidBrush(IndicatorColor), numberOffset.X - (indicatorSize / 2),
+                                                              numberOffset.Y - (indicatorSize / 2),
+                                                              indicatorSize, indicatorSize);
+            IndicatorLabel.SetLocation(numberOffset.X, numberOffset.Y);
+            IndicatorLabel.Draw(g);
+
+            g.Dispose();
+            image.Dispose();
+
+            image = temp;
+            Size = image.Size;
+            createdImage = true;
+        }
+
+        public void SpeedOff()
+        {
+            speedingOff = true;
+        }
 
         public void Update(DeltaTime deltaTime, FancyWater water, float baseSpeed)
         {
-            X -= (Speed * baseSpeed) * deltaTime.Seconds;
+            if (speedingOff)
+            {
+                if (currentSpeedOffTime < speedOffTime)
+                {
+                    currentSpeedOffTime += deltaTime.Seconds;
+                    if (currentSpeedOffTime > speedOffTime) currentSpeedOffTime = speedOffTime;
+
+                    SpeedMod = 1 + ((maxSpeedMod - 1) * speedOffCurve.GetValue(currentSpeedOffTime));
+                }
+            }
+
+            X -= ((SpeedMod * Speed) * baseSpeed) * deltaTime.Seconds;
             origin.X = (int)X;
 
-            if(X > 0) water.MovePoint(water.ClosestPoint(origin.X + disturbPoint), -(Speed * 85) * deltaTime.Seconds);
+            int disturbX = origin.X + disturbPoint;
 
+            if(disturbX > 0)
+            {
+                float waterDelta = (Speed * 50) * deltaTime.Seconds;
+                int closest = water.ClosestPoint(disturbX);
+
+                water.MovePoint(closest, -waterDelta);
+                water.MovePoint(closest + 1, waterDelta);
+            }
+
+            if (!OutOfBounds && X <= -trueWidth)
+                OutOfBounds = true;
         }
 
         public override void Draw(Graphics g)
         {
-            Container.SetLocation(origin.X + containerOffset.X, origin.Y + containerOffset.Y);
-            Container.Draw(g);
+            if (createdImage)
+            {
+                g.DrawImage(image, origin.X, origin.Y, Size.Width, Size.Height);
+            }
+            else
+            {
+                Container.SetLocation(origin.X + containerOffset.X, origin.Y + containerOffset.Y);
+                Container.Draw(g);
 
-            g.DrawImage(image, origin.X, origin.Y, Size.Width, Size.Height);
+                g.DrawImage(image, origin.X, origin.Y, Size.Width, Size.Height);
 
-            g.FillEllipse(new SolidBrush(IndicatorColor), origin.X + numberOffset.X - (indicatorSize / 2),
-                                                          origin.Y + numberOffset.Y - (indicatorSize / 2),
-                                                          indicatorSize, indicatorSize);
+                g.FillEllipse(new SolidBrush(IndicatorColor), origin.X + numberOffset.X - (indicatorSize / 2),
+                                                              origin.Y + numberOffset.Y - (indicatorSize / 2),
+                                                              indicatorSize, indicatorSize);
 
-            IndicatorLabel.SetLocation(origin.X + numberOffset.X, origin.Y + numberOffset.Y);
-            IndicatorLabel.Draw(g);
+                IndicatorLabel.SetLocation(origin.X + numberOffset.X, origin.Y + numberOffset.Y);
+                IndicatorLabel.Draw(g);
+            }
         }
     }
 }

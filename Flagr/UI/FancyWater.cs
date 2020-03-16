@@ -19,12 +19,12 @@ namespace Flagr.UI
         private float cutoff = 1.2f;
         private float k = .025f; //Spring Constant
         private float maxHeight = 50;
-        private float dampening = .05f;
+        private float dampening = .065f;
         private float spread = .01f;
         private float[] pointVel;
         private float[] deltaHeight;
 
-        private int pointDistance = 100;
+        public int pointDistance = 100;
 
         public FancyWater(int waterline, int waterHeight, int surfacePoints, Color waterColor)
         {
@@ -45,21 +45,27 @@ namespace Flagr.UI
             PopulatePoints();
         }
 
-        //Coulnd't get this to work with deltaTime. Since it's just a misc visual effect I don't think it's worth the time to fix it
+        //Coulnd't get this to work with deltaTime. Since it's just a misc visual effect I don't think it's worth the time to fix it.
         private void UpdatePoint(int pointIndex, DeltaTime deltaTime)
         {
+            float mod = deltaTime.Seconds / .01f;
+            if (mod > 10) mod = 10; 
+            
             float dif = WaterPoints[pointIndex].Y - line;
-            float acc = -k * dif - (dampening * pointVel[pointIndex]);
+            float acc = -k * dif - (dampening * pointVel[pointIndex]) * mod;
 
             deltaHeight[pointIndex] += pointVel[pointIndex];
             pointVel[pointIndex] += acc;
 
-            if (pointIndex > 0) pointVel[pointIndex - 1] += spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex - 1].Y);
-            if (pointIndex < surfacePoints - 1) pointVel[pointIndex + 1] += spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex + 1].Y);
+            if (pointIndex > 0) pointVel[pointIndex - 1] += mod * spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex - 1].Y);
+            if (pointIndex < surfacePoints - 1) pointVel[pointIndex + 1] += mod * spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex + 1].Y);
         }
 
         public void MovePoint(int index, float delta)
         {
+            if (index >= deltaHeight.Length)
+                return;
+
             deltaHeight[index] += delta;
         }
 
