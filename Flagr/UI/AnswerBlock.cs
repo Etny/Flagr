@@ -28,7 +28,7 @@ namespace Flagr.UI
 
         public bool Enabled = false;
         private float currentFade = 0f;
-        private float maxFade = .8f;
+        private float maxFade = .4f;
 
         public QuizButton[] Buttons;
         public int ButtonSpacing = 15;
@@ -60,6 +60,8 @@ namespace Flagr.UI
             Buttons = new QuizButton[3];
 
             PupolateButtons();
+
+            Disable();
         }
 
         public void PupolateButtons()
@@ -92,6 +94,9 @@ namespace Flagr.UI
             foreach (QuizButton b in Buttons)
             {
                 b.CorrectAnswer = false;
+                b.Hoverable = true;
+                b.Selectable = true;
+                b.clickBuildupDecrease = 100;
 
                 if (Correct == b)
                 {
@@ -126,12 +131,38 @@ namespace Flagr.UI
             Correct.CorrectAnswer = true;
 
             if (!pressed.CorrectAnswer)
+            {
                 Correct.Highlight();
+                currentBoat.Sink();
+            }
+            else
+            {
+                currentBoat.SpeedOff();
+            }
 
-            currentBoat.SpeedOff();
+            foreach (QuizButton b in Buttons)
+            {
+                b.Hoverable = false;
+                b.Selectable = false;
+            }
         }
 
-        public void Update(DeltaTime deltaTime)
+        public void Disable()
+        {
+            if (!Enabled)
+                return;
+
+            Enabled = false;
+            
+            foreach(QuizButton b in Buttons)
+            {
+                b.Hoverable = false;
+                b.Selectable = false;
+                b.clickBuildupDecrease = 280;
+            }
+        }
+
+        public override void Update(DeltaTime deltaTime)
         {
             if(Enabled && currentFade < maxFade)
             {

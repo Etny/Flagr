@@ -773,6 +773,7 @@
     <None Include="Resources\flagData.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\boats\speed1.png" />
     <None Include="Resources\boats\sail1.png" />
     <Content Include="Resources\boatData.xml" />
   </ItemGroup>

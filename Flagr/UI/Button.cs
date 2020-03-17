@@ -21,14 +21,14 @@ namespace Flagr.UI
 
         protected bool lastDown = false;
 
-        protected float hoverBuildup = 0;
-        protected float hoverBuildupMax = 100;
-        protected float hoverBuildupIncrease = 600;
-        protected float hoverBuildupDecrease = 650;
+        public float hoverBuildup = 0;
+        public float hoverBuildupMax = 100;
+        public float hoverBuildupIncrease = 600;
+        public float hoverBuildupDecrease = 650;
 
-        protected float clickBuildup = 0;
-        protected float clickBuildUpMax = 200;
-        protected float clickBuildupDecrease = 280;
+        public float clickBuildup = 0;
+        public float clickBuildUpMax = 200;
+        public float clickBuildupDecrease = 280;
 
         public Button(Point Location, Size Size) 
         {

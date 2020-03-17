@@ -12,4 +12,16 @@
     <watersink>30</watersink>
     <speed>1</speed>
   </boat>
+
+  <boat>
+    <image>speed1</image>
+    <flagX>240</flagX>
+    <flagY>33</flagY>
+    <flagHeight>105</flagHeight>
+    <numX>223</numX>
+    <numY>190</numY>
+    <disturbX>305</disturbX>
+    <watersink>20</watersink>
+    <speed>2</speed>
+  </boat>
 </boats>

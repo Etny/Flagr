@@ -316,10 +316,13 @@ namespace Flagr.Properties {
         ///&lt;boats&gt;
         ///  &lt;boat&gt;
         ///    &lt;image&gt;sail1&lt;/image&gt;
-        ///    &lt;flagX&gt;393&lt;/flagX&gt;
-        ///    &lt;flagY&gt;132&lt;/flagY&gt;
-        ///    &lt;numX&gt;147&lt;/numX&gt;
+        ///    &lt;flagX&gt;288&lt;/flagX&gt;
+        ///    &lt;flagY&gt;120&lt;/flagY&gt;
+        ///    &lt;flagHeight&gt;115&lt;/flagHeight&gt;
+        ///    &lt;numX&gt;94&lt;/numX&gt;
         ///    &lt;numY&gt;144&lt;/numY&gt;
+        ///    &lt;disturbX&gt;30&lt;/disturbX&gt;
+        ///    &lt;watersink&gt;30&lt;/watersink&gt;
         ///    &lt;speed&gt;1&lt;/speed&gt;
         ///  &lt;/boat&gt;
         ///&lt;/boats&gt;
@@ -1883,6 +1886,16 @@ namespace Flagr.Properties {
         internal static System.Drawing.Bitmap so {
             get {
                 object obj = ResourceManager.GetObject("so", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap speed1 {
+            get {
+                object obj = ResourceManager.GetObject("speed1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

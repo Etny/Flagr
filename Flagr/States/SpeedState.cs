@@ -16,10 +16,12 @@ namespace Flagr.States
         private List<Boat> boatTemplates = new List<Boat>();
         private List<Boat> boats = new List<Boat>();
         private List<Boat> deadBoats = new List<Boat>();
-        private float boatSpeed = 160f;
+        private float boatSpeed = 220f;
         private int maxBoats = 3;
-        private float maxBoatSpawnDelay = 2.6f;
-        private float spawnCountdown = 2.6f;
+        private float maxBoatSpawnDelay = 2f;
+        private float spawnCountdown = 2f;
+
+        private Random rng = new Random();
 
         public static int WaterLine = Program.Height / 5 * 2;
         private int waterHeight = 150;
@@ -60,7 +62,7 @@ namespace Flagr.States
 
         private void AddBoat()
         {
-            Boat boat = boatTemplates[0].Clone();
+            Boat boat = boatTemplates[rng.Next(0, boatTemplates.Count)].Clone();
 
             foreach(AnswerBlock block in blocks)
             {
@@ -81,9 +83,12 @@ namespace Flagr.States
 
         public override void Scroll(MouseEventArgs e)
         {
-            water.MovePoint(water.ClosestPoint(Program.Input.MouseLocation.X), Math.Sign(e.Delta) * 5);
+            float delta = Math.Sign(e.Delta) * 3f;
+            int closest = water.ClosestPoint(Program.Input.MouseLocation.X);
 
-           // if(boats.Count < 3) AddBoat();
+            water.MovePoint(closest - 1, -.5f * delta);
+            water.MovePoint(closest, delta);
+            water.MovePoint(closest + 1, -.5f * delta);
         }
 
         public override void Update(DeltaTime deltaTime)
@@ -106,7 +111,7 @@ namespace Flagr.States
 
             foreach(Boat dead in deadBoats)
             {
-                dead.CurrentBlock.Enabled = false;
+                if(dead.CurrentBlock != null) dead.CurrentBlock.Disable();
                 boats.Remove(dead);
                 if(spawnCountdown <= 0) spawnCountdown = maxBoatSpawnDelay;
             }

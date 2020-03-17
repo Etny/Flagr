@@ -28,6 +28,7 @@ namespace Flagr.UI
         protected Point numberOffset;
         protected int disturbPoint;
         protected Image image;
+        protected Image sinkingImage;
         protected bool createdImage = false;
         protected int trueWidth;
 
@@ -38,6 +39,12 @@ namespace Flagr.UI
         protected static float maxSpeedMod = 6f;
         protected static float speedOffTime = 1.2f;
         protected static BezierCurve speedOffCurve = new BezierCurve(new PointF[] { new PointF(.9f, -.15f), new PointF(1f, .67f) }, speedOffTime);
+
+        protected bool sinking = false;
+        protected float sinkY = 0;
+        protected float sinkingRot = 0;
+        protected float maxSinkingRot = 45;
+        protected float sinkingRotSpeed = 90;
 
         public Boat(XmlNode node, float scale)
         {
@@ -141,8 +148,30 @@ namespace Flagr.UI
             speedingOff = true;
         }
 
+        public void Sink()
+        {
+            sinking = true;
+            sinkingImage = Util.RotateImage(image, 0, false); ;
+        }
+
         public void Update(DeltaTime deltaTime, FancyWater water, float baseSpeed)
         {
+            if (sinking)
+            {
+                if(sinkingRot < maxSinkingRot)
+                {
+                    sinkingRot += sinkingRotSpeed * deltaTime.Seconds;
+                    sinkingImage = Util.RotateImage(image, sinkingRot, false);
+                }
+
+                sinkY += Weight * 10 * deltaTime.Seconds;
+
+                if ((origin.Y + sinkY) + (image.Height / 2) - (sinkingImage.Height / 2) >= SpeedState.WaterLine)
+                    OutOfBounds = true;
+
+                return;
+            }
+
             if (speedingOff)
             {
                 if (currentSpeedOffTime < speedOffTime)
@@ -161,7 +190,7 @@ namespace Flagr.UI
 
             if(disturbX > 0)
             {
-                float waterDelta = (Speed * 50) * deltaTime.Seconds;
+                float waterDelta = (Speed * SpeedMod * 50) * deltaTime.Seconds;
                 int closest = water.ClosestPoint(disturbX);
 
                 water.MovePoint(closest, -waterDelta);
@@ -176,7 +205,14 @@ namespace Flagr.UI
         {
             if (createdImage)
             {
-                g.DrawImage(image, origin.X, origin.Y, Size.Width, Size.Height);
+                if (!sinking)
+                {
+                    g.DrawImage(image, origin.X, origin.Y, Size.Width, Size.Height);
+                }
+                else
+                {
+                    g.DrawImage(sinkingImage, origin.X + (image.Width / 2)- (sinkingImage.Width / 2), (origin.Y + sinkY) + (image.Height / 2) - (sinkingImage.Height / 2), sinkingImage.Width, sinkingImage.Height);
+                }
             }
             else
             {
