@@ -26,6 +26,9 @@ namespace Flagr.UI
 
         public int pointDistance = 100;
 
+        private long timePassed = 0;
+        private int timeWindow = 10;
+
         public FancyWater(int waterline, int waterHeight, int surfacePoints, Color waterColor)
         {
             line = waterline;
@@ -48,17 +51,14 @@ namespace Flagr.UI
         //Coulnd't get this to work with deltaTime. Since it's just a misc visual effect I don't think it's worth the time to fix it.
         private void UpdatePoint(int pointIndex, DeltaTime deltaTime)
         {
-            float mod = deltaTime.Seconds / .01f;
-            if (mod > 10) mod = 10; 
-            
             float dif = WaterPoints[pointIndex].Y - line;
-            float acc = -k * dif - (dampening * pointVel[pointIndex]) * mod;
+            float acc = -k * dif - (dampening * pointVel[pointIndex]);
 
             deltaHeight[pointIndex] += pointVel[pointIndex];
             pointVel[pointIndex] += acc;
 
-            if (pointIndex > 0) pointVel[pointIndex - 1] += mod * spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex - 1].Y);
-            if (pointIndex < surfacePoints - 1) pointVel[pointIndex + 1] += mod * spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex + 1].Y);
+            if (pointIndex > 0) pointVel[pointIndex - 1] += spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex - 1].Y);
+            if (pointIndex < surfacePoints - 1) pointVel[pointIndex + 1] += spread * (WaterPoints[pointIndex].Y - WaterPoints[pointIndex + 1].Y);
         }
 
         public void MovePoint(int index, float delta)
@@ -83,6 +83,13 @@ namespace Flagr.UI
 
         public void Update(DeltaTime deltaTime)
         {
+            timePassed += deltaTime.Milliseconds;
+
+            if (timePassed < timeWindow)
+                return;
+
+            timePassed -= timeWindow;
+
             for (int i = 0; i < surfacePoints; i++)
                 UpdatePoint(i, deltaTime);
 
