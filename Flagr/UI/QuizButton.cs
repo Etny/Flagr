@@ -42,7 +42,7 @@ namespace Flagr.UI
         private int num;
         private string numString;
         private bool correct = false;
-        private int textMargin = 5;
+        
 
         public Font NumberFont { get; set; } = new Font("Arial", 30, FontStyle.Bold); 
 

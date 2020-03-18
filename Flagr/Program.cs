@@ -3,6 +3,7 @@ using Flagr.States;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace Flagr
         public static readonly int Width = 1280;
         public static readonly int Height = 720;
 
+        public static Brush BackgroundBrush;
+
         private static long lastTime;
         private static DeltaTime deltaTime;
 
@@ -37,6 +40,8 @@ namespace Flagr
             Flags = new FlagManager();
             CurrentState = new StartupState();
             deltaTime = new DeltaTime();
+
+            BackgroundBrush = new SolidBrush(Color.FromArgb(255, 218, 238, 247));
 
 
             //  AppForm.Paint += AppForm_Paint;

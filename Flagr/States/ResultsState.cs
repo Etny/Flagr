@@ -113,7 +113,7 @@ namespace Flagr.States
 
         private void Draw()
         {
-            graphics.FillRectangle(Brushes.White, 0, 0, Program.Width, Program.Height);
+            graphics.FillRectangle(Program.BackgroundBrush, 0, 0, Program.Width, Program.Height);
 
             scorePositionLabel.Draw(graphics);
             scoreLabel.Draw(graphics);

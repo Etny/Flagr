@@ -21,6 +21,8 @@ namespace Flagr.UI
 
         protected bool lastDown = false;
 
+        protected int textMargin = 5;
+
         public float hoverBuildup = 0;
         public float hoverBuildupMax = 100;
         public float hoverBuildupIncrease = 600;
@@ -34,6 +36,8 @@ namespace Flagr.UI
         {
             this.Location = Location;
             this.Size = Size;
+
+            Label.Font = new Font("Arial", 30, FontStyle.Regular);
         }
 
         public Button(int X, int Y, int Width, int Height) : this(new Point(X, Y), new Size(Width, Height)) { }
@@ -42,12 +46,13 @@ namespace Flagr.UI
 
         public Button(Point Location, int Width, int Height) : this(Location, new Size(Width, Height)) { }
 
-        public Button() : this(Point.Empty, 100, 50) { }
+        public Button(Point point) : this(Point.Empty, 100, 50) { }
 
         protected override void SetOrigin()
         {
             base.SetOrigin();
             Label.Location = new Point(origin.X + Size.Width / 2, origin.Y + Size.Height / 2);
+            Label.Bounds = new Size(Size.Width - (textMargin * 2), Size.Height - (textMargin * 2));
         }
 
         public virtual void Select()

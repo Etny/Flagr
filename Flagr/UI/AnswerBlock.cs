@@ -1,4 +1,5 @@
 ﻿using Flagr.Flags;
+using Flagr.States;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,11 +41,14 @@ namespace Flagr.UI
         private int index;
         private Random rng = new Random();
 
-        public AnswerBlock(Point Location, Color Color, Size Size, String Letter, int index)
+        private SpeedState state;
+
+        public AnswerBlock(Point Location, Color Color, Size Size, String Letter, int index, SpeedState State)
         {
             DrawMode = DrawMode.TopLeft;
             this.Size = Size;
             this.Location = Location;
+            this.state = State;
 
             LetterLabel = new TextLabel()
             {
@@ -130,6 +134,8 @@ namespace Flagr.UI
 
             Correct.CorrectAnswer = true;
 
+            currentBoat.Answered = true;
+
             if (!pressed.CorrectAnswer)
             {
                 Correct.Highlight();
@@ -137,8 +143,11 @@ namespace Flagr.UI
             }
             else
             {
+                currentBoat.CorrectlyAnswered = true;
                 currentBoat.SpeedOff();
             }
+
+            state.ScoreBoat(currentBoat);
 
             foreach (QuizButton b in Buttons)
             {

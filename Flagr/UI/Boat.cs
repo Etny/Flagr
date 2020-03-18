@@ -17,6 +17,8 @@ namespace Flagr.UI
         public int Weight;
         public int FlagHeight;
         public AnswerBlock CurrentBlock;
+        public bool CorrectlyAnswered = false;
+        public bool Answered = false;
         public float X = (float)Program.Width + 10;
         public bool OutOfBounds = false;
 
@@ -123,11 +125,11 @@ namespace Flagr.UI
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
-            Container.SetLocation(containerOffset.X, containerOffset.Y);
-            Container.Draw(g);
 
             g.DrawImage(image, 0, 0);
 
+            Container.SetLocation(containerOffset.X, containerOffset.Y);
+            Container.Draw(g);
 
             g.FillEllipse(new SolidBrush(IndicatorColor), numberOffset.X - (indicatorSize / 2),
                                                               numberOffset.Y - (indicatorSize / 2),
@@ -161,10 +163,11 @@ namespace Flagr.UI
                 if(sinkingRot < maxSinkingRot)
                 {
                     sinkingRot += sinkingRotSpeed * deltaTime.Seconds;
+                    sinkingImage.Dispose();
                     sinkingImage = Util.RotateImage(image, sinkingRot, false);
                 }
 
-                sinkY += Weight * 10 * deltaTime.Seconds;
+                sinkY += Weight * 12 * deltaTime.Seconds;
 
                 if ((origin.Y + sinkY) + (image.Height / 2) - (sinkingImage.Height / 2) >= SpeedState.WaterLine)
                     OutOfBounds = true;

@@ -10,7 +10,7 @@
     <numY>144</numY>
     <disturbX>30</disturbX>
     <watersink>30</watersink>
-    <speed>1</speed>
+    <speed>1.3</speed>
   </boat>
 
   <boat>
@@ -22,6 +22,18 @@
     <numY>190</numY>
     <disturbX>305</disturbX>
     <watersink>20</watersink>
-    <speed>2</speed>
+    <speed>1.85</speed>
+  </boat>
+
+  <boat>
+    <image>cargo1</image>
+    <flagX>212</flagX>
+    <flagY>152</flagY>
+    <flagHeight>90</flagHeight>
+    <numX>293</numX>
+    <numY>100</numY>
+    <disturbX>77</disturbX>
+    <watersink>30</watersink>
+    <speed>.9</speed>
   </boat>
 </boats>

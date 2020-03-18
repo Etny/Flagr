@@ -97,7 +97,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="States\GalleryState.cs" />
+    <Compile Include="States\MenuState.cs" />
     <Compile Include="States\QuizState.cs" />
+    <Compile Include="States\SpeedResultsState.cs" />
     <Compile Include="States\ResultsState.cs" />
     <Compile Include="States\SpeedState.cs" />
     <Compile Include="States\StartupState.cs" />
@@ -773,6 +775,7 @@
     <None Include="Resources\flagData.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\boats\cargo1.png" />
     <None Include="Resources\boats\speed1.png" />
     <None Include="Resources\boats\sail1.png" />
     <Content Include="Resources\boatData.xml" />
