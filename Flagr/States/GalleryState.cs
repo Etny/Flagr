@@ -57,6 +57,11 @@ namespace Flagr.States
 
             timer = new Stopwatch();
         }
+        protected override void KeyPressed(KeyEventArgs e, bool repeating)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Program.SetCurrentState(new TransitionState(this, Program.MainMenu, .4f, .1f, .4f));
+        }
 
         private void PopulateContainers()
         {

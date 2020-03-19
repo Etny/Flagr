@@ -29,8 +29,7 @@ namespace Flagr.States
 
         private Grade scoredGrade;
 
-        private float delay = 2f;
-        int index = 0;
+        private Button returnButton;
 
         public ResultsState()
         {
@@ -60,6 +59,16 @@ namespace Flagr.States
             gradeLabel = baseLabel.Clone();
             gradeLabel.Location = new Point(Program.Width / 2 + labelDistanceX, Program.Height / 2 + labelDistanceY);
             gradeLabel.Font = new Font("Arial", 70, FontStyle.Bold);
+
+            returnButton = new Button(new Point(Program.Width - 170, Program.Height - 50), new Size(250, 50));
+            returnButton.Label.Text = "Return to Menu";
+            returnButton.DrawMode = DrawMode.Centered;
+            returnButton.OnSelect += ReturnPressed;
+        }
+
+        public void ReturnPressed(object sender, EventArgs e)
+        {
+            Program.SetCurrentState(new TransitionState(this, Program.MainMenu, .4f, .1f, .4f));
         }
 
         private Grade CalculateGrade() 
@@ -108,6 +117,8 @@ namespace Flagr.States
                 FinalizeScore();
             }*/
 
+            returnButton.Update(deltaTime);
+
             Draw(); 
         }
 
@@ -121,6 +132,8 @@ namespace Flagr.States
             gradeLabel.Draw(graphics);
             answersPositionLabel.Draw(graphics);
             answersLabel.Draw(graphics);
+
+            returnButton.Draw(graphics);
         }
 
         private class Grade

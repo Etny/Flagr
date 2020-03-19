@@ -26,8 +26,7 @@ namespace Flagr.States
         private int labelDistanceX = 150;
         private int labelDistanceY = 150;
 
-        private float delay = 2f;
-        int index = 0;
+        private Button returnButton;
 
         public SpeedResultsState()
         {
@@ -56,7 +55,17 @@ namespace Flagr.States
 
             missedLabel = baseLabel.Clone();
             missedLabel.Location = new Point(Program.Width / 2 + labelDistanceX, Program.Height / 2 + labelDistanceY);
+
+            returnButton = new Button(new Point(Program.Width - 170, Program.Height - 50), new Size(250, 50));
+            returnButton.Label.Text = "Return to Menu";
+            returnButton.DrawMode = DrawMode.Centered;
+            returnButton.OnSelect += ReturnPressed;
         }
+        public void ReturnPressed(object sender, EventArgs e)
+        {
+            Program.SetCurrentState(new TransitionState(this, Program.MainMenu, .4f, .1f, .4f));
+        }
+
 
         public void FinalizeScore()
         {
@@ -71,6 +80,8 @@ namespace Flagr.States
 
         public override void Update(DeltaTime deltaTime)
         {
+            returnButton.Update(deltaTime);
+            
             Draw(); 
         }
 
@@ -84,6 +95,8 @@ namespace Flagr.States
             missedLabel.Draw(graphics);
             answersPositionLabel.Draw(graphics);
             answersLabel.Draw(graphics);
+
+            returnButton.Draw(graphics);
         }
 
 

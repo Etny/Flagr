@@ -13,10 +13,10 @@ namespace Flagr.States
         private List<Boat> boatTemplates = new List<Boat>();
         private List<Boat> boats = new List<Boat>();
         private List<Boat> deadBoats = new List<Boat>();
-        private readonly float boatSpeed = 220f;
+        private readonly float boatSpeed = 250f;
         private readonly float boatScale = .75f;
         private readonly int maxBoats = 3;
-        private readonly float maxBoatSpawnDelay = 2f;
+        private readonly float maxBoatSpawnDelay = 1.7f;
         private float spawnCountdown = 2f;
 
         private Random rng = new Random();
@@ -149,6 +149,9 @@ namespace Flagr.States
         }
         protected override void KeyPressed(KeyEventArgs e, bool repeating)
         {
+            if (e.KeyCode == Keys.Escape)
+                Program.SetCurrentState(new TransitionState(this, Program.MainMenu, .4f, .1f, .4f));
+
             if (repeating || !buttonKeys.Contains(e.KeyCode))
                 return;
 
@@ -238,7 +241,7 @@ namespace Flagr.States
 
         public override void Update(DeltaTime deltaTime)
         {
-            if(spawnCountdown > 0)
+            if(IsCurrentState && spawnCountdown > 0)
             {
                 spawnCountdown -= deltaTime.Seconds;
 
@@ -249,7 +252,8 @@ namespace Flagr.States
             water.Update(deltaTime);
             scoreAddLabel.Update(deltaTime);
 
-            Time -= deltaTime.Milliseconds;
+            
+            if(IsCurrentState) Time -= deltaTime.Milliseconds;
             if(Time <= 0)
             {
                 Time = 0;

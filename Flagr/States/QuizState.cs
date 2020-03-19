@@ -68,8 +68,10 @@ namespace Flagr.States
         Stopwatch timer;
         private int ticks = 0;
 
-        public QuizState() : base()
+        public QuizState(int QuestionCount) : base()
         {
+            this.QuestionCount = QuestionCount;
+
             //Set UI elements
             flags = new FlagContainer[queueSize];
             buttons = new QuizButton[4];
@@ -266,8 +268,11 @@ namespace Flagr.States
 
         protected override void KeyPressed(KeyEventArgs e, bool repeating)
         {
+            if (e.KeyCode == Keys.Escape)
+                Program.SetCurrentState(new TransitionState(this, Program.MainMenu, .4f, .1f, .4f));
+
             if (e.KeyCode == Keys.R)
-                Program.SetCurrentState(new QuizState());
+                Program.SetCurrentState(new QuizState(QuestionCount));
 
             if (!repeating && buttonKeys.Contains(e.KeyCode))
                 buttons[buttonKeys.IndexOf(e.KeyCode) % 4].Select();

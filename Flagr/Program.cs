@@ -18,6 +18,7 @@ namespace Flagr
         public static State CurrentState;
         public static FlagManager Flags;
         public static InputManager Input;
+        public static MenuState MainMenu;
 
         public static readonly int Width = 1280;
         public static readonly int Height = 720;
@@ -40,6 +41,7 @@ namespace Flagr
             Flags = new FlagManager();
             CurrentState = new StartupState();
             deltaTime = new DeltaTime();
+            MainMenu = new MenuState();
 
             BackgroundBrush = new SolidBrush(Color.FromArgb(255, 218, 238, 247));
 
