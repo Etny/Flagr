@@ -34,14 +34,13 @@ namespace Flagr
             // 
             // Form1
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+          //  this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1280, 720);
             this.DoubleBuffered = true;
-            this.MaximumSize = new System.Drawing.Size(1298, 767);
-            this.MinimumSize = new System.Drawing.Size(1298, 767);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Flagr";
             this.ResumeLayout(false);
 
         }
